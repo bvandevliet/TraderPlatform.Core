@@ -1,0 +1,32 @@
+version: '3.4'
+
+services:
+
+  traderplatform.database:
+    image: mariadb:latest
+
+  traderplatform.redis:
+    image: redis:alpine
+
+  traderplatform.nginx:
+    image: nginx:alpine
+
+  traderplatform.engine:
+    image: ${DOCKER_REGISTRY-}traderplatformengine
+    build:
+      context: .
+      dockerfile: TraderPlatform.Engine/Dockerfile
+
+  traderplatform.daemon:
+    image: ${DOCKER_REGISTRY-}traderplatformdaemon
+    build:
+      context: .
+      dockerfile: TraderPlatform.Daemon/Dockerfile
+
+  traderplatform.expressapp:
+    image: ${DOCKER_REGISTRY-}traderplatformexpressapp
+    build:
+      context: .
+      dockerfile: TraderPlatform.ExpressApp/Dockerfile
+    ports:
+      - "1337:1337"

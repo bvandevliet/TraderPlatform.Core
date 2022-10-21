@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraderPlatform.Engine", "TraderPlatform.Engine\TraderPlatform.Engine.csproj", "{6C519168-BD73-4D6E-B8D5-85FF75B039C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraderPlatform.Daemon", "TraderPlatform.Daemon\TraderPlatform.Daemon.csproj", "{A7DF9039-9A9A-471F-85B4-058BA15072B9}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{212570DA-6A5C-4500-A55C-F889E06445E9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraderPlatform.Common", "TraderPlatform.Common\TraderPlatform.Common.csproj", "{6E64424A-601C-40F8-8018-1E4BB164995E}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "TraderPlatform.ExpressApp", "TraderPlatform.ExpressApp\TraderPlatform.ExpressApp.njsproj", "{F9775C1C-FF78-4216-8547-C371582C3E21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{73C41C1C-D784-49DB-92BC-8D1ECA06C75A}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C519168-BD73-4D6E-B8D5-85FF75B039C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C519168-BD73-4D6E-B8D5-85FF75B039C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C519168-BD73-4D6E-B8D5-85FF75B039C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C519168-BD73-4D6E-B8D5-85FF75B039C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7DF9039-9A9A-471F-85B4-058BA15072B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7DF9039-9A9A-471F-85B4-058BA15072B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7DF9039-9A9A-471F-85B4-058BA15072B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7DF9039-9A9A-471F-85B4-058BA15072B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{212570DA-6A5C-4500-A55C-F889E06445E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{212570DA-6A5C-4500-A55C-F889E06445E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{212570DA-6A5C-4500-A55C-F889E06445E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{212570DA-6A5C-4500-A55C-F889E06445E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E64424A-601C-40F8-8018-1E4BB164995E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E64424A-601C-40F8-8018-1E4BB164995E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E64424A-601C-40F8-8018-1E4BB164995E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E64424A-601C-40F8-8018-1E4BB164995E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9775C1C-FF78-4216-8547-C371582C3E21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9775C1C-FF78-4216-8547-C371582C3E21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9775C1C-FF78-4216-8547-C371582C3E21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9775C1C-FF78-4216-8547-C371582C3E21}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {12EF93A0-9E7B-4FE8-B0F2-395DC2B350E4}
+	EndGlobalSection
+EndGlobal

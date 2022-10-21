@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "newLine": "lf",
+    "alwaysStrict": true,
+    // "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "checkJs": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "outDir": "dist",
+    "lib": [ "ES6" ],
+    "target": "ES6",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    // "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "*": [ "node_modules/*" ]
+    }
+  },
+  "include": [ "src/**/*" ],
+  "exclude": [ "node_modules" ]
+}
