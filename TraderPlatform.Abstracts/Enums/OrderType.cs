@@ -2,6 +2,10 @@ namespace TraderPlatform.Abstracts.Enums;
 
 public enum OrderType
 {
-  Buy,
-  Sell,
+  Market,
+  Limit,
+  //StopLoss,
+  //StopLossLimit,
+  //TakeProfit,
+  //TakeProfitLimit,
 }

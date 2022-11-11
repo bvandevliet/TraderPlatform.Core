@@ -1,3 +1,4 @@
+using TraderPlatform.Abstracts.Enums;
 using TraderPlatform.Abstracts.Interfaces;
 
 namespace TraderPlatform.Abstracts.Services;
@@ -14,5 +15,23 @@ public interface IExchangeService
 
   IPortfolioBalance GetBalance();
 
-  // and more ..
+  object DepositHistory();
+
+  object WithdrawHistory();
+
+  object GetCandlesticks(IMarket market, CandlestickInterval interval, int limit);
+
+  bool IsTradable(IMarket market);
+
+  IOrder NewOrder(IOrder order);
+
+  IOrder? GetOrder(IMarket market, string orderId);
+
+  IOrder? CancelOrder(IMarket market, string orderId);
+
+  IEnumerable<IOrder> GetOpenOrders();
+
+  IEnumerable<IOrder> CancelAllOrders();
+
+  IEnumerable<IOrder> SellWholePortfolio();
 }
