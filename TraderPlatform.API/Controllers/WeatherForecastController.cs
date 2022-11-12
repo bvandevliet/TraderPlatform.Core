@@ -16,7 +16,7 @@ public class WeatherForecastController : ControllerBase
 
   public WeatherForecastController(ILogger<WeatherForecastController> logger)
   {
-    this.logger = logger;
+    logger = logger;
   }
 
   [HttpGet(Name = "GetWeatherForecast")]

@@ -1,6 +1,6 @@
 namespace TraderPlatform.Abstracts.Enums;
 
-public enum CandlestickInterval
+public enum CandleInterval
 {
   _15m,
   _1h,

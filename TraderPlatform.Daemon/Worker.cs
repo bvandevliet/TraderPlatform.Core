@@ -6,14 +6,14 @@ public class Worker : BackgroundService
 
   public Worker(ILogger<Worker> logger)
   {
-    this.logger = logger;
+    logger = logger;
   }
 
   protected override async Task ExecuteAsync(CancellationToken stoppingToken)
   {
     while (!stoppingToken.IsCancellationRequested)
     {
-      this.logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+      logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
       await Task.Delay(1000, stoppingToken);
     }
   }

@@ -2,7 +2,7 @@ namespace TraderPlatform.Abstracts.Interfaces;
 
 public interface IMarket
 {
-  string QuoteCurrency { get; set; }
+  IAsset QuoteCurrency { get; set; }
 
-  string Symbol { get; set; }
+  IAsset BaseCurrency { get; set; }
 }
