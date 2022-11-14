@@ -1,9 +1,7 @@
 namespace TraderPlatform.Abstracts.Interfaces;
 
-public interface IPosition //: IAsset
+public interface IPosition
 {
-  //IAsset Asset { get; }
-
   decimal Amount { get; }
 
   decimal AmountAvailable { get; }

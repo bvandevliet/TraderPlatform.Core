@@ -1,4 +1,4 @@
-using TraderPlatform.Abstracts.BaseClasses;
+using TraderPlatform.Abstracts.Models;
 using TraderPlatform.Abstracts.Enums;
 using TraderPlatform.Abstracts.Interfaces;
 
@@ -14,7 +14,7 @@ public interface IExchangeService
 
   decimal TakerFee { get; }
 
-  Task<BalanceBase> GetBalance();
+  Task<Balance> GetBalance();
 
   // TODO: ASIGN TYPE !!
   Task<object> DepositHistory();

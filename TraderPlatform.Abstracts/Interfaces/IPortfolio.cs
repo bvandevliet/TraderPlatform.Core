@@ -2,10 +2,5 @@ namespace TraderPlatform.Abstracts.Interfaces;
 
 public interface IPortfolio
 {
-  // OR USE INTERFACE ??
-  IEnumerable<KeyValuePair<IAsset, IPosition>> Positions { get; set; }
-
-  //IEnumerable<IAssetPosition> Positions { get; set; }
+  Dictionary<IAsset, IPosition> Positions { get; }
 }
-
-//public interface IAssetPosition : IAsset, IPosition { }
