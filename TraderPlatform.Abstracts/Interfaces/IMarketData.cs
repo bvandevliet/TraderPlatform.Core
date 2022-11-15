@@ -4,7 +4,7 @@ public interface IMarketData : IMarket
 {
   int PricePrecision { get; }
 
-  decimal MinOrderInQuoteAsset { get; }
+  decimal MinOrderInQuoteCurrency { get; }
 
-  decimal MinOrderInBaseAsset { get; }
+  decimal MinOrderInBaseCurrency { get; }
 }
