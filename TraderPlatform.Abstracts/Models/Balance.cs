@@ -26,6 +26,11 @@ public class Balance
 
   public void AddAllocation(Allocation allocation)
   {
+    if (allocations.Any(alloc => alloc.Equals(allocation)))
+    {
+      return;
+    }
+
     allocations.Add(allocation);
 
     amountQuoteTotal = null;

@@ -27,8 +27,8 @@ public class Allocation : ITickerPrice, IPosition
     get => amount;
     set
     {
-      UpdateAmount(value);
       UpdateAmountAvailable(Math.Min(value, amountAvailable));
+      UpdateAmount(value);
     }
   }
 
@@ -38,7 +38,8 @@ public class Allocation : ITickerPrice, IPosition
     get => amountAvailable;
     set
     {
-      UpdateAmountAvailable(Math.Min(value, amount));
+      UpdateAmount(Math.Max(value, amount));
+      UpdateAmountAvailable(value);
     }
   }
 
@@ -58,7 +59,7 @@ public class Allocation : ITickerPrice, IPosition
     IMarket market,
     decimal price,
     decimal amount,
-    decimal? amountAvailable)
+    decimal? amountAvailable = null)
   {
     Market = market;
     this.price = price;
@@ -68,35 +69,41 @@ public class Allocation : ITickerPrice, IPosition
 
   private void UpdatePrice(decimal newValue)
   {
-    amountQuote = null;
-    amountQuoteAvailable = null;
-
     decimal oldValue = price;
     price = newValue;
 
     if (oldValue != newValue)
+    {
+      amountQuote = null;
+      amountQuoteAvailable = null;
+
       PriceUpdate?.Invoke(this, new(oldValue, newValue));
+    }
   }
 
   private void UpdateAmount(decimal newValue)
   {
-    amountQuote = null;
-
     decimal oldValue = amount;
     amount = newValue;
 
     if (oldValue != newValue)
+    {
+      amountQuote = null;
+
       AmountUpdate?.Invoke(this, new(amount, newValue));
+    }
   }
 
   private void UpdateAmountAvailable(decimal newValue)
   {
-    amountQuoteAvailable = null;
-
     decimal oldValue = amountAvailable;
     amountAvailable = newValue;
 
     if (oldValue != newValue)
+    {
+      amountQuoteAvailable = null;
+
       AmountAvailableUpdate?.Invoke(this, new(amountAvailable, newValue));
+    }
   }
 }

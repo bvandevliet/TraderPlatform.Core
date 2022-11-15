@@ -20,7 +20,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraderPlatform.API", "TraderPlatform.API\TraderPlatform.API.csproj", "{AFA7A4C6-1FA3-4BDB-8E19-28741EE47D52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraderPlatform.Abstracts", "TraderPlatform.Abstracts\TraderPlatform.Abstracts.csproj", "{3FD96273-7EB8-449A-A748-2A8928455CF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraderPlatform.Abstracts", "TraderPlatform.Abstracts\TraderPlatform.Abstracts.csproj", "{3FD96273-7EB8-449A-A748-2A8928455CF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraderPlatform.Abstracts.UnitTests", "TraderPlatform.Abstracts.UnitTests\TraderPlatform.Abstracts.UnitTests.csproj", "{D5128A3E-9FB7-46A2-97D8-0EBE93C6AE1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,10 @@ Global
 		{3FD96273-7EB8-449A-A748-2A8928455CF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FD96273-7EB8-449A-A748-2A8928455CF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FD96273-7EB8-449A-A748-2A8928455CF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5128A3E-9FB7-46A2-97D8-0EBE93C6AE1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5128A3E-9FB7-46A2-97D8-0EBE93C6AE1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5128A3E-9FB7-46A2-97D8-0EBE93C6AE1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5128A3E-9FB7-46A2-97D8-0EBE93C6AE1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
