@@ -6,6 +6,8 @@ namespace TraderPlatform.Abstracts.UnitTests;
 [TestClass]
 public class AllocationTests
 {
+  private readonly Asset quoteCurrency = new("EUR");
+
   /// <inheritdoc/>
   private class AllocationWrapper : Allocation
   {
@@ -32,14 +34,14 @@ public class AllocationTests
   }
 
   [TestMethod]
-  public void Allocation_InitTooGreatAmountAvailable()
+  public void InitTooGreatAmountAvailable()
   {
     decimal price = 15;
     decimal amount = 25;
     decimal amountAvailable = amount + 5; // should be 25
 
     // Create instance, but pass too great value for AmountAvailable.
-    var alloc = new AllocationWrapper(new Market(), price, amount, amountAvailable);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount, amountAvailable);
 
     // Reset to expected value.
     amountAvailable = amount;
@@ -53,14 +55,14 @@ public class AllocationTests
   }
 
   [TestMethod]
-  public void Allocation_InitOmitAmountAvailable()
+  public void InitOmitAmountAvailable()
   {
     decimal price = 15;
     decimal amount = 25;
     decimal amountAvailable = amount; // 25
 
     // Create instance, but omit AmountAvailable.
-    var alloc = new AllocationWrapper(new Market(), price, amount/*, amountAvailable*/);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount/*, amountAvailable*/);
 
     // AmountAvailable should be initiated to be equal to Amount.
     Assert.AreEqual(amountAvailable, alloc.AmountAvailable);
@@ -71,13 +73,13 @@ public class AllocationTests
   }
 
   [TestMethod]
-  public void Allocation_UpdatePrice()
+  public void UpdatePrice()
   {
     decimal price = 15;
     decimal amount = 25;
     decimal amountAvailable = amount; // 25
 
-    var alloc = new AllocationWrapper(new Market(), price, amount);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount);
 
     price = alloc.Price = 10; // was 15
 
@@ -92,13 +94,13 @@ public class AllocationTests
   }
 
   [TestMethod]
-  public void Allocation_IncreaseAmount()
+  public void IncreaseAmount()
   {
     decimal price = 15;
     decimal amount = 25;
     decimal amountAvailable = amount; // 25
 
-    var alloc = new AllocationWrapper(new Market(), price, amount, amountAvailable);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount, amountAvailable);
 
     amount = alloc.Amount = 30; // was 25
 
@@ -123,13 +125,13 @@ public class AllocationTests
   }
 
   [TestMethod]
-  public void Allocation_DecreaseAmount()
+  public void DecreaseAmount()
   {
     decimal price = 15;
     decimal amount = 25;
     decimal amountAvailable = amount; // 25
 
-    var alloc = new AllocationWrapper(new Market(), price, amount, amountAvailable);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount, amountAvailable);
 
     amount = amountAvailable = alloc.Amount = 20; // was 25
 
@@ -152,13 +154,13 @@ public class AllocationTests
   }
 
   [TestMethod]
-  public void Allocation_DecreaseAmountAvailable()
+  public void DecreaseAmountAvailable()
   {
     decimal price = 15;
     decimal amount = 25;
     decimal amountAvailable = amount; // 25
 
-    var alloc = new AllocationWrapper(new Market(), price, amount, amountAvailable);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount, amountAvailable);
 
     amountAvailable = alloc.AmountAvailable = 20; // was 25
 
@@ -183,14 +185,14 @@ public class AllocationTests
   }
 
   [TestMethod]
-  public void Allocation_IncreaseAmountAvailable()
+  public void IncreaseAmountAvailable()
   {
     decimal price = 15;
     decimal amount = 25;
     decimal amountAvailable = amount; // 25
 
     // Create instance.
-    var alloc = new AllocationWrapper(new Market(), price, amount, amountAvailable);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount, amountAvailable);
 
     amountAvailable = amount = alloc.AmountAvailable = 30; // was 25
 
