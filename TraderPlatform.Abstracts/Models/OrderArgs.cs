@@ -2,23 +2,18 @@ using TraderPlatform.Abstracts.Interfaces;
 
 namespace TraderPlatform.Abstracts.Models;
 
+/// <inheritdoc cref="IOrderArgs"/>
 public class OrderArgs : IOrderArgs
 {
-  /// <summary>
-  /// Only for limit orders. Specifies the amount in quote currency that is paid/received for each unit of base currency.
-  /// </summary>
+  /// <inheritdoc cref="IOrderArgs.Price"/>
   public decimal? Price { get; set; } = null;
 
-  /// <summary>
-  /// Only for limit orders. Specifies the amount of base currency that will be bought/sold.
-  /// </summary>
+  /// <inheritdoc cref="IOrderArgs.Amount"/>
   public decimal? Amount { get; set; } = null;
 
-  /// <summary>
-  /// Only for market orders. If specified, <see cref="AmountQuote"/> of the quote currency will be bought/sold for the best price available.
-  /// </summary>
+  /// <inheritdoc cref="IOrderArgs.AmountQuote"/>
   public decimal? AmountQuote { get; set; } = null;
 
-  /// <inheritdoc cref="Enums.TimeInForce"/>
+  /// <inheritdoc cref="IOrderArgs.TimeInForce"/>
   public Enums.TimeInForce TimeInForce { get; set; } = Enums.TimeInForce.GTC;
 }

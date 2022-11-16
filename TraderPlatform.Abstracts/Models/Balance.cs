@@ -3,6 +3,9 @@ using TraderPlatform.Abstracts.Interfaces;
 
 namespace TraderPlatform.Abstracts.Models;
 
+/// <summary>
+/// Represents a portfolio balance, containing relative asset allocations.
+/// </summary>
 public class Balance
 {
   /// <summary>
@@ -12,13 +15,13 @@ public class Balance
 
   private readonly List<Allocation> allocations = new();
   /// <summary>
-  /// The collection of <see cref="Allocation"/> instances.
+  /// Collection of <see cref="Allocation"/> instances.
   /// </summary>
   public ReadOnlyCollection<Allocation> Allocations { get; }
 
   private decimal? amountQuoteTotal;
   /// <summary>
-  /// Total value of amount in quote currency.
+  /// Total amount in quote currency.
   /// </summary>
   public decimal AmountQuoteTotal
   {
@@ -27,7 +30,7 @@ public class Balance
 
   private decimal? amountQuoteAvailable;
   /// <summary>
-  /// Total value of available amount in quote currency.
+  /// Total freely available amount in quote currency.
   /// </summary>
   public decimal AmountQuoteAvailable
   {
@@ -35,7 +38,7 @@ public class Balance
   }
 
   /// <summary>
-  /// A collection of <see cref="Allocation"/> instances and total quote amount values.
+  /// Collection of <see cref="Allocation"/> instances and total quote amount values.
   /// </summary>
   /// <param name="quoteCurrency"><inheritdoc cref="QuoteCurrency"/></param>
   public Balance(IAsset quoteCurrency)

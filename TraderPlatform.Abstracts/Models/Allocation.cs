@@ -3,6 +3,9 @@ using TraderPlatform.Abstracts.Interfaces;
 
 namespace TraderPlatform.Abstracts.Models;
 
+/// <summary>
+/// Represents an asset allocation.
+/// </summary>
 public class Allocation : ITickerPrice, IPosition
 {
   /// <summary>
@@ -65,7 +68,7 @@ public class Allocation : ITickerPrice, IPosition
 
   private decimal? amountQuote;
   /// <summary>
-  /// Value of amount in quote currency.
+  /// Amount in quote currency.
   /// </summary>
   public decimal AmountQuote
   {
@@ -74,7 +77,7 @@ public class Allocation : ITickerPrice, IPosition
 
   private decimal? amountQuoteAvailable;
   /// <summary>
-  /// Value of available amount in quote currency.
+  /// Freely available amount in quote currency.
   /// </summary>
   public decimal AmountQuoteAvailable
   {

@@ -1,5 +1,8 @@
 namespace TraderPlatform.Abstracts.Interfaces;
 
+/// <summary>
+/// Order arguments.
+/// </summary>
 public interface IOrderArgs
 {
   /// <summary>
@@ -8,7 +11,7 @@ public interface IOrderArgs
   public decimal? Price { get; set; }
 
   /// <summary>
-  /// Only for limit orders. Specifies the amount of base currency that will be bought/sold.
+  /// For limit orders, optionally for market orders. Specifies the amount of base currency that will be bought/sold.
   /// </summary>
   public decimal? Amount { get; set; }
 
