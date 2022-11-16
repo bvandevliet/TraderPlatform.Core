@@ -6,7 +6,7 @@ using TraderPlatform.Abstracts.Interfaces;
 internal class Asset : IAsset
 {
   public string Symbol { get; set; }
-  public string? Name => throw new NotImplementedException();
+  public string Name { get; set; } = string.Empty;
 
   public Asset(string symbol)
   {
@@ -18,10 +18,11 @@ internal class Asset : IAsset
 internal class Market : IMarket
 {
   public IAsset QuoteCurrency { get; set; }
-  public IAsset BaseCurrency => throw new NotImplementedException();
+  public IAsset BaseCurrency { get; set; }
 
-  public Market(Asset quoteCurrency)
+  public Market(Asset quoteCurrency, Asset baseCurrency)
   {
     QuoteCurrency = quoteCurrency;
+    BaseCurrency = baseCurrency;
   }
 }

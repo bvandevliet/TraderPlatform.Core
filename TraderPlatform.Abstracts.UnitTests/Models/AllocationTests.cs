@@ -1,12 +1,13 @@
 using TraderPlatform.Abstracts.Interfaces;
 using TraderPlatform.Abstracts.Models;
 
-namespace TraderPlatform.Abstracts.UnitTests;
+namespace TraderPlatform.Abstracts.UnitTests.Models;
 
 [TestClass]
 public class AllocationTests
 {
   private readonly Asset quoteCurrency = new("EUR");
+  private readonly Asset baseCurrency = new("BTC");
 
   /// <inheritdoc/>
   private class AllocationWrapper : Allocation
@@ -41,7 +42,7 @@ public class AllocationTests
     decimal amountAvailable = amount + 5; // should be 25
 
     // Create instance, but pass too great value for AmountAvailable.
-    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount, amountAvailable);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency, baseCurrency), price, amount, amountAvailable);
 
     // Reset to expected value.
     amountAvailable = amount;
@@ -62,7 +63,7 @@ public class AllocationTests
     decimal amountAvailable = amount; // 25
 
     // Create instance, but omit AmountAvailable.
-    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount/*, amountAvailable*/);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency, baseCurrency), price, amount/*, amountAvailable*/);
 
     // AmountAvailable should be initiated to be equal to Amount.
     Assert.AreEqual(amountAvailable, alloc.AmountAvailable);
@@ -79,7 +80,7 @@ public class AllocationTests
     decimal amount = 25;
     decimal amountAvailable = amount; // 25
 
-    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency, baseCurrency), price, amount);
 
     price = alloc.Price = 10; // was 15
 
@@ -100,7 +101,7 @@ public class AllocationTests
     decimal amount = 25;
     decimal amountAvailable = amount; // 25
 
-    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount, amountAvailable);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency, baseCurrency), price, amount, amountAvailable);
 
     amount = alloc.Amount = 30; // was 25
 
@@ -131,7 +132,7 @@ public class AllocationTests
     decimal amount = 25;
     decimal amountAvailable = amount; // 25
 
-    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount, amountAvailable);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency, baseCurrency), price, amount, amountAvailable);
 
     amount = amountAvailable = alloc.Amount = 20; // was 25
 
@@ -160,7 +161,7 @@ public class AllocationTests
     decimal amount = 25;
     decimal amountAvailable = amount; // 25
 
-    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount, amountAvailable);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency, baseCurrency), price, amount, amountAvailable);
 
     amountAvailable = alloc.AmountAvailable = 20; // was 25
 
@@ -192,7 +193,7 @@ public class AllocationTests
     decimal amountAvailable = amount; // 25
 
     // Create instance.
-    var alloc = new AllocationWrapper(new Market(quoteCurrency), price, amount, amountAvailable);
+    var alloc = new AllocationWrapper(new Market(quoteCurrency, baseCurrency), price, amount, amountAvailable);
 
     amountAvailable = amount = alloc.AmountAvailable = 30; // was 25
 

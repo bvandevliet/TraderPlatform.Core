@@ -1,20 +1,20 @@
-using TraderPlatform.Abstracts.Interfaces;
 using TraderPlatform.Abstracts.Models;
 
-namespace TraderPlatform.Abstracts.UnitTests;
+namespace TraderPlatform.Abstracts.UnitTests.Models;
 
 [TestClass]
 public class BalanceTests
 {
+  private readonly Asset quoteCurrency = new("EUR");
+  private readonly Asset baseCurrency = new("BTC");
+
   [TestMethod]
   public void AddAllocation_MultipleTimes()
   {
-    var quoteCurrency = new Asset("EUR");
-
     var balance = new Balance(quoteCurrency);
 
-    var alloc1 = new Allocation(new Market(quoteCurrency), 0, 0);
-    var alloc2 = new Allocation(new Market(quoteCurrency), 0, 0);
+    var alloc1 = new Allocation(new Market(quoteCurrency, baseCurrency), 0, 0);
+    var alloc2 = new Allocation(new Market(quoteCurrency, baseCurrency), 0, 0);
 
     balance.AddAllocation(alloc1);
     balance.AddAllocation(alloc1);
@@ -27,12 +27,10 @@ public class BalanceTests
   [TestMethod]
   public void AddAllocation_WrongQuoteCurrency()
   {
-    var quoteCurrency = new Asset("EUR");
-
     var balance = new Balance(quoteCurrency);
 
-    var alloc1 = new Allocation(new Market(quoteCurrency), 0, 0);
-    var alloc2 = new Allocation(new Market(new Asset("BTC")), 0, 0);
+    var alloc1 = new Allocation(new Market(quoteCurrency, baseCurrency), 0, 0);
+    var alloc2 = new Allocation(new Market(baseCurrency, quoteCurrency), 0, 0);
 
     balance.AddAllocation(alloc1);
 

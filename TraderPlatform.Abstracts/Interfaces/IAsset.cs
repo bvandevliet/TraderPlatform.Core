@@ -4,5 +4,5 @@ public interface IAsset
 {
   string Symbol { get; }
 
-  string? Name { get; }
+  string Name { get; }
 }
