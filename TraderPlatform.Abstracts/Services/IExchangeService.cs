@@ -4,40 +4,40 @@ using TraderPlatform.Abstracts.Interfaces;
 
 namespace TraderPlatform.Abstracts.Services;
 
-interface IExchangeService
+public interface IExchangeService
 {
-  public IAsset QuoteCurrency { get; }
+  IAsset QuoteCurrency { get; }
 
-  public decimal MinimumOrderSize { get; }
+  decimal MinimumOrderSize { get; }
 
-  public decimal MakerFee { get; }
+  decimal MakerFee { get; }
 
-  public decimal TakerFee { get; }
+  decimal TakerFee { get; }
 
-  internal Task<Balance> GetBalance();
-
-  // TODO: ASIGN TYPE !!
-  internal Task<object> DepositHistory();
+  Task<Balance> GetBalance();
 
   // TODO: ASIGN TYPE !!
-  internal Task<object> WithdrawHistory();
+  Task<object> DepositHistory();
 
   // TODO: ASIGN TYPE !!
-  internal Task<object> GetCandles(IMarket market, CandleInterval interval, int limit);
+  Task<object> WithdrawHistory();
 
-  internal Task<bool> IsTradable(IMarket market);
+  // TODO: ASIGN TYPE !!
+  Task<object> GetCandles(IMarket market, CandleInterval interval, int limit);
 
-  internal Task<ITickerPrice> GetPrice(IMarket market);
+  Task<bool> IsTradable(IMarket market);
 
-  internal Task<IOrder> NewOrder(IMarket market, OrderSide side, OrderType type, IOrderArgs orderArgs);
+  Task<ITickerPrice> GetPrice(IMarket market);
 
-  internal Task<IOrder?> GetOrder(string orderId, IMarket? market);
+  Task<IOrder> NewOrder(IMarket market, OrderSide side, OrderType type, IOrderArgs orderArgs);
 
-  internal Task<IOrder?> CancelOrder(string orderId, IMarket? market);
+  Task<IOrder?> GetOrder(string orderId, IMarket? market);
 
-  internal Task<IEnumerable<IOrder>> GetOpenOrders(IMarket? market);
+  Task<IOrder?> CancelOrder(string orderId, IMarket? market);
 
-  internal Task<IEnumerable<IOrder>> CancelAllOpenOrders(IMarket? market);
+  Task<IEnumerable<IOrder>> GetOpenOrders(IMarket? market);
 
-  internal Task<IEnumerable<IOrder>> SellAllPositions(IAsset? asset);
+  Task<IEnumerable<IOrder>> CancelAllOpenOrders(IMarket? market);
+
+  Task<IEnumerable<IOrder>> SellAllPositions(IAsset? asset);
 }

@@ -1,5 +1,5 @@
 namespace TraderPlatform.Abstracts.Services;
 
-public class IMarketCapService
+public interface IMarketCapService
 {
 }
