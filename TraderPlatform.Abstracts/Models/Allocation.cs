@@ -29,9 +29,7 @@ public class Allocation : ITickerPrice, IPosition
   public IMarket Market { get; }
 
   private decimal price;
-  /// <summary>
-  /// Price per unit in quote currency as specified in <see cref="Market"/>.
-  /// </summary>
+  /// <inheritdoc cref="ITickerPrice.Price"/>
   public decimal Price
   {
     get => price;
