@@ -2,46 +2,31 @@ using TraderPlatform.Abstracts.Enums;
 
 namespace TraderPlatform.Abstracts.Interfaces;
 
-public interface IOrder
+public interface IOrder : IOrderArgs
 {
-  string? Id { get; }
+  string? Id { get; set; }
 
-  // SHOULD BE ONLY GET WHEN ORDER IS RETURNED !!
-  IMarket Market { get; set; }
+  IMarket Market { get; }
 
-  // SHOULD BE ONLY GET WHEN ORDER IS RETURNED !!
-  OrderSide Side { get; set; }
+  OrderSide Side { get; }
 
-  // SHOULD BE ONLY GET WHEN ORDER IS RETURNED !!
-  OrderType Type { get; set; }
+  OrderType Type { get; }
 
-  OrderStatus Status { get; }
+  OrderStatus Status { get; set; }
 
-  // SHOULD BE ONLY GET WHEN ORDER IS RETURNED !!
-  decimal Price { get; set; }
+  decimal AmountFilled { get; set; }
 
-  // SHOULD BE ONLY GET WHEN ORDER IS RETURNED !!
-  decimal Amount { get; set; }
+  decimal AmountRemaining { get; set; }
 
-  decimal AmountFilled { get; }
+  decimal AmountQuoteFilled { get; set; }
 
-  decimal AmountRemaining { get; }
+  decimal AmountQuoteRemaining { get; set; }
 
-  // SHOULD BE ONLY GET WHEN ORDER IS RETURNED !!
-  decimal AmountQuote { get; set; }
+  decimal FeeExpected { get; set; }
 
-  decimal AmountQuoteFilled { get; }
+  decimal FeePaid { get; set; }
 
-  decimal AmountQuoteRemaining { get; }
+  DateTime Created { get; set; }
 
-  decimal FeeExpected { get; }
-
-  decimal FeePaid { get; }
-
-  DateTime Created { get; }
-
-  DateTime Updated { get; }
-
-  // SHOULD BE ONLY GET WHEN ORDER IS RETURNED !!
-  bool DisableMarketProtection { get; set; }
+  DateTime Updated { get; set; }
 }

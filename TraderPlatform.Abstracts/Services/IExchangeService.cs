@@ -4,40 +4,40 @@ using TraderPlatform.Abstracts.Interfaces;
 
 namespace TraderPlatform.Abstracts.Services;
 
-public interface IExchangeService
+interface IExchangeService
 {
-  IAsset QuoteCurrency { get; }
+  public IAsset QuoteCurrency { get; }
 
-  decimal MinimumOrderSize { get; }
+  public decimal MinimumOrderSize { get; }
 
-  decimal MakerFee { get; }
+  public decimal MakerFee { get; }
 
-  decimal TakerFee { get; }
+  public decimal TakerFee { get; }
 
-  Task<Balance> GetBalance();
-
-  // TODO: ASIGN TYPE !!
-  Task<object> DepositHistory();
+  internal Task<Balance> GetBalance();
 
   // TODO: ASIGN TYPE !!
-  Task<object> WithdrawHistory();
+  internal Task<object> DepositHistory();
 
   // TODO: ASIGN TYPE !!
-  Task<object> GetCandles(IMarket market, CandleInterval interval, int limit);
+  internal Task<object> WithdrawHistory();
 
-  Task<bool> IsTradable(IMarket market);
+  // TODO: ASIGN TYPE !!
+  internal Task<object> GetCandles(IMarket market, CandleInterval interval, int limit);
 
-  Task<ITickerPrice> GetPrice(IMarket market);
+  internal Task<bool> IsTradable(IMarket market);
 
-  Task<IOrder> NewOrder(IOrder order);
+  internal Task<ITickerPrice> GetPrice(IMarket market);
 
-  Task<IOrder?> GetOrder(string orderId, IMarket market);
+  internal Task<IOrder> NewOrder(IMarket market, OrderSide side, OrderType type, IOrderArgs orderArgs);
 
-  Task<IOrder?> CancelOrder(string orderId, IMarket market);
+  internal Task<IOrder?> GetOrder(string orderId, IMarket? market);
 
-  Task<IEnumerable<IOrder>> GetOpenOrders(IMarket? market);
+  internal Task<IOrder?> CancelOrder(string orderId, IMarket? market);
 
-  Task<IEnumerable<IOrder>> CancelAllOpenOrders(IMarket? market);
+  internal Task<IEnumerable<IOrder>> GetOpenOrders(IMarket? market);
 
-  Task<IEnumerable<IOrder>> SellAllPositions(IAsset? asset);
+  internal Task<IEnumerable<IOrder>> CancelAllOpenOrders(IMarket? market);
+
+  internal Task<IEnumerable<IOrder>> SellAllPositions(IAsset? asset);
 }
