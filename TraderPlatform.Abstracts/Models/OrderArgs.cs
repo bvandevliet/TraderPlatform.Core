@@ -5,15 +5,15 @@ namespace TraderPlatform.Abstracts.Models;
 /// <inheritdoc cref="IOrderArgs"/>
 public class OrderArgs : IOrderArgs
 {
-  /// <inheritdoc cref="IOrderArgs.Price"/>
+  /// <inheritdoc/>
   public decimal? Price { get; set; } = null;
 
-  /// <inheritdoc cref="IOrderArgs.Amount"/>
+  /// <inheritdoc/>
   public decimal? Amount { get; set; } = null;
 
-  /// <inheritdoc cref="IOrderArgs.AmountQuote"/>
+  /// <inheritdoc/>
   public decimal? AmountQuote { get; set; } = null;
 
-  /// <inheritdoc cref="IOrderArgs.TimeInForce"/>
+  /// <inheritdoc/>
   public Enums.TimeInForce TimeInForce { get; set; } = Enums.TimeInForce.GTC;
 }
