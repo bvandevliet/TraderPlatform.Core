@@ -19,8 +19,25 @@ public class BalanceTests
     balance.AddAllocation(alloc1);
     balance.AddAllocation(alloc2);
 
-    // An allocation should only be added once.
+    // Both allocations should be added.
     Assert.AreEqual(2, balance.Allocations.Count);
+  }
+
+  [TestMethod]
+  public void RemoveAllocation()
+  {
+    var balance = new Balance(quoteCurrency);
+
+    var alloc1 = new Allocation(new Market(quoteCurrency, new Asset("BTC")), 0, 0);
+    var alloc2 = new Allocation(new Market(quoteCurrency, new Asset("ETH")), 0, 0);
+
+    balance.AddAllocation(alloc1);
+    balance.AddAllocation(alloc2);
+
+    balance.RemoveAllocation(new Market(quoteCurrency, new Asset("BTC")));
+
+    // Allocation should be removed leaving one.
+    Assert.AreEqual(1, balance.Allocations.Count);
   }
 
   [TestMethod]
@@ -38,7 +55,7 @@ public class BalanceTests
     }
     catch (InvalidOperationException) { }
 
-    // An allocation should only be added once.
+    // Allocation should only be added once.
     Assert.AreEqual(1, balance.Allocations.Count);
   }
 
@@ -60,7 +77,7 @@ public class BalanceTests
     }
     catch (InvalidOperationException) { }
 
-    // An allocation should only be added once.
+    // Allocation should only be added once.
     Assert.AreEqual(1, balance.Allocations.Count);
   }
 
@@ -80,7 +97,7 @@ public class BalanceTests
     }
     catch (InvalidOperationException) { }
 
-    // An allocation should only be added once.
+    // Allocation should only be added once.
     Assert.AreEqual(1, balance.Allocations.Count);
   }
 

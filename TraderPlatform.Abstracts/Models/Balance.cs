@@ -70,4 +70,22 @@ public class Balance
     amountQuoteTotal = null;
     amountQuoteAvailable = null;
   }
+
+  /// <summary>
+  /// Remove an <see cref="Allocation"/> from the <see cref="Allocations"/> collection.
+  /// </summary>
+  /// <param name="market">The <see cref="IMarket"/> to remove allocation of.</param>
+  /// <returns>If the <see cref="Allocation"/> was removed. If false, the <see cref="Allocation"/> didn't exist.</returns>
+  public bool RemoveAllocation(Market market)
+  {
+    if (allocations.RemoveAll(alloc => alloc.Market.Equals(market)) > 0)
+    {
+      amountQuoteTotal = null;
+      amountQuoteAvailable = null;
+
+      return true;
+    }
+
+    return false;
+  }
 }
