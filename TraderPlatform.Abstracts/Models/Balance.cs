@@ -50,19 +50,21 @@ public class Balance
 
   /// <summary>
   /// Add an <see cref="Allocation"/> to the <see cref="Allocations"/> collection.
+  /// Note that <see cref="AmountQuoteTotal"/> and <see cref="AmountQuoteAvailable"/> will become outdated.
   /// </summary>
   /// <param name="allocation">The <see cref="Allocation"/> to add.</param>
-  /// <exception cref="InvalidOperationException"></exception>
+  /// <exception cref="Exceptions.InvalidObjectException"></exception>
+  /// <exception cref="Exceptions.ObjectAlreadyExistsException"></exception>
   public void AddAllocation(Allocation allocation)
   {
     if (QuoteCurrency.Symbol != allocation.Market.QuoteCurrency.Symbol)
     {
-      throw new InvalidOperationException("Quote currency of allocation does not match with the quote currency of this Balance instance.");
+      throw new Exceptions.InvalidObjectException("Quote currency of given Allocation object does not match with the quote currency of this Balance instance.");
     }
 
     if (allocations.Any(alloc => alloc.Market.Equals(allocation.Market)))
     {
-      throw new InvalidOperationException("An allocation in this market already exists.");
+      throw new Exceptions.ObjectAlreadyExistsException("An allocation in this market already exists.");
     }
 
     allocations.Add(allocation);
@@ -73,9 +75,10 @@ public class Balance
 
   /// <summary>
   /// Remove an <see cref="Allocation"/> from the <see cref="Allocations"/> collection.
+  /// Note that <see cref="AmountQuoteTotal"/> and <see cref="AmountQuoteAvailable"/> will become outdated.
   /// </summary>
   /// <param name="market">The <see cref="IMarket"/> to remove allocation of.</param>
-  /// <returns>If the <see cref="Allocation"/> was removed. If false, the <see cref="Allocation"/> didn't exist.</returns>
+  /// <returns>True if the <see cref="Allocation"/> was removed. False if the <see cref="Allocation"/> didn't exist.</returns>
   public bool RemoveAllocation(Market market)
   {
     if (allocations.RemoveAll(alloc => alloc.Market.Equals(market)) > 0)
