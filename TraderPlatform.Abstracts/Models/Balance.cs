@@ -45,7 +45,7 @@ public class Balance
   {
     QuoteCurrency = quoteCurrency;
 
-    Allocations = new(allocations);
+    Allocations = allocations.AsReadOnly();
   }
 
   /// <summary>
