@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using TraderPlatform.Abstracts.Interfaces;
 
-namespace TraderPlatform.Abstracts.Models;
+namespace TraderPlatform.Abstracts.BaseClasses;
 
 /// <inheritdoc cref="IConfiguration"/>
-public class Configuration : IConfiguration
+public abstract class ConfigurationBase : IConfiguration
 {
   /// <inheritdoc/>
   [Required]
