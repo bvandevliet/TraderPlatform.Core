@@ -53,7 +53,7 @@ public class BalanceTests
       balance.AddAllocation(alloc);
       Assert.Fail();
     }
-    catch (InvalidOperationException) { }
+    catch (Exceptions.ObjectAlreadyExistsException) { }
 
     // Allocation should only be added once.
     Assert.AreEqual(1, balance.Allocations.Count);
@@ -75,7 +75,7 @@ public class BalanceTests
       balance.AddAllocation(alloc2);
       Assert.Fail();
     }
-    catch (InvalidOperationException) { }
+    catch (Exceptions.ObjectAlreadyExistsException) { }
 
     // Allocation should only be added once.
     Assert.AreEqual(1, balance.Allocations.Count);
@@ -95,7 +95,7 @@ public class BalanceTests
       balance.AddAllocation(alloc2);
       Assert.Fail();
     }
-    catch (InvalidOperationException) { }
+    catch (Exceptions.ObjectAlreadyExistsException) { }
 
     // Allocation should only be added once.
     Assert.AreEqual(1, balance.Allocations.Count);
@@ -115,7 +115,7 @@ public class BalanceTests
       balance.AddAllocation(alloc2);
       Assert.Fail();
     }
-    catch (InvalidOperationException) { }
+    catch (Exceptions.InvalidObjectException) { }
 
     // An allocation against a different quote currency should not be added.
     Assert.AreEqual(1, balance.Allocations.Count);
