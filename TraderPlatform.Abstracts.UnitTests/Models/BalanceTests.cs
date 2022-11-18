@@ -9,7 +9,63 @@ public class BalanceTests
   private readonly Asset baseCurrency = new("BTC");
 
   [TestMethod]
-  public void AddAllocation_MultipleTimes()
+  public void AddAllocation()
+  {
+    var balance = new Balance(quoteCurrency);
+
+    var alloc1 = new Allocation(new Market(quoteCurrency, new Asset("BTC")), 0, 0);
+    var alloc2 = new Allocation(new Market(quoteCurrency, new Asset("ETH")), 0, 0);
+
+    balance.AddAllocation(alloc1);
+    balance.AddAllocation(alloc2);
+
+    // An allocation should only be added once.
+    Assert.AreEqual(2, balance.Allocations.Count);
+  }
+
+  [TestMethod]
+  public void AddAllocation_SameReferenceMultipleTimes()
+  {
+    var balance = new Balance(quoteCurrency);
+
+    var alloc = new Allocation(new Market(quoteCurrency, baseCurrency), 0, 0);
+
+    balance.AddAllocation(alloc);
+    try
+    {
+      balance.AddAllocation(alloc);
+      Assert.Fail();
+    }
+    catch (InvalidOperationException) { }
+
+    // An allocation should only be added once.
+    Assert.AreEqual(1, balance.Allocations.Count);
+  }
+
+  [TestMethod]
+  public void AddAllocation_SameMarketReferenceMultipleTimes()
+  {
+    var balance = new Balance(quoteCurrency);
+
+    var market = new Market(quoteCurrency, baseCurrency);
+
+    var alloc1 = new Allocation(market, 0, 0);
+    var alloc2 = new Allocation(market, 0, 0);
+
+    balance.AddAllocation(alloc1);
+    try
+    {
+      balance.AddAllocation(alloc2);
+      Assert.Fail();
+    }
+    catch (InvalidOperationException) { }
+
+    // An allocation should only be added once.
+    Assert.AreEqual(1, balance.Allocations.Count);
+  }
+
+  [TestMethod]
+  public void AddAllocation_SameMarketMultipleTimes()
   {
     var balance = new Balance(quoteCurrency);
 
@@ -17,11 +73,15 @@ public class BalanceTests
     var alloc2 = new Allocation(new Market(quoteCurrency, baseCurrency), 0, 0);
 
     balance.AddAllocation(alloc1);
-    balance.AddAllocation(alloc1);
-    balance.AddAllocation(alloc2);
+    try
+    {
+      balance.AddAllocation(alloc2);
+      Assert.Fail();
+    }
+    catch (InvalidOperationException) { }
 
-    /// An allocation should only be added once.
-    Assert.AreEqual(2, balance.Allocations.Count);
+    // An allocation should only be added once.
+    Assert.AreEqual(1, balance.Allocations.Count);
   }
 
   [TestMethod]
@@ -33,7 +93,6 @@ public class BalanceTests
     var alloc2 = new Allocation(new Market(baseCurrency, quoteCurrency), 0, 0);
 
     balance.AddAllocation(alloc1);
-
     try
     {
       balance.AddAllocation(alloc2);

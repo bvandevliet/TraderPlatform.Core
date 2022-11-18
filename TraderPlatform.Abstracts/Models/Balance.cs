@@ -51,18 +51,18 @@ public class Balance
   /// <summary>
   /// Add an <see cref="Allocation"/> to the <see cref="Allocations"/> collection.
   /// </summary>
-  /// <param name="allocation"></param>
+  /// <param name="allocation">The <see cref="Allocation"/> to add.</param>
   /// <exception cref="InvalidOperationException"></exception>
   public void AddAllocation(Allocation allocation)
   {
     if (QuoteCurrency.Symbol != allocation.Market.QuoteCurrency.Symbol)
     {
-      throw new InvalidOperationException("Quote currency of allocation to be added does not match with the quote currency of this Balance instance.");
+      throw new InvalidOperationException("Quote currency of allocation does not match with the quote currency of this Balance instance.");
     }
 
-    if (allocations.Any(alloc => alloc == allocation))
+    if (allocations.Any(alloc => alloc.Market.Equals(allocation.Market)))
     {
-      return; // Prevent adding a reference to the same allocation multiple times.
+      throw new InvalidOperationException("An allocation in this market already exists.");
     }
 
     allocations.Add(allocation);

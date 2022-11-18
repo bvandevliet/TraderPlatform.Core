@@ -18,7 +18,7 @@ public class AllocationTests
 
     /// <inheritdoc/>
     public AllocationWrapper(
-      IMarket market,
+      Market market,
       decimal price,
       decimal amount,
       decimal? amountAvailable = null)

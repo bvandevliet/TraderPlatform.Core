@@ -16,4 +16,12 @@ public class Market : IMarket
     QuoteCurrency = quoteCurrency;
     BaseCurrency = baseCurrency;
   }
+
+  public override bool Equals(object? obj) =>
+    obj is not null and IMarket
+      && QuoteCurrency.Symbol == ((IMarket)obj).QuoteCurrency.Symbol
+      && BaseCurrency.Symbol == ((IMarket)obj).BaseCurrency.Symbol;
+
+  public override int GetHashCode() =>
+    $"{QuoteCurrency.Symbol}{BaseCurrency.Symbol}".GetHashCode();
 }

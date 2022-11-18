@@ -92,7 +92,7 @@ public class Allocation : ITickerPrice, IPosition
   /// <param name="amount"><inheritdoc cref="Amount"/></param>
   /// <param name="amountAvailable"><inheritdoc cref="AmountAvailable"/></param>
   public Allocation(
-    IMarket market,
+    Market market,
     decimal price,
     decimal amount,
     decimal? amountAvailable = null)
