@@ -21,4 +21,12 @@ public class Asset : IAsset
     Symbol = symbol;
     Name = name ?? string.Empty;
   }
+
+  public override bool Equals(object? obj) =>
+    obj is not null and IAsset && Symbol == ((IAsset)obj).Symbol;
+
+  public override int GetHashCode() => Symbol.GetHashCode();
+
+  public static bool operator ==(Asset a, Asset b) => a.Symbol == b.Symbol;
+  public static bool operator !=(Asset a, Asset b) => !(a == b);
 }

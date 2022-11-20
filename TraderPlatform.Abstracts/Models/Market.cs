@@ -24,4 +24,7 @@ public class Market : IMarket
 
   public override int GetHashCode() =>
     $"{QuoteCurrency.Symbol}{BaseCurrency.Symbol}".GetHashCode();
+
+  public static bool operator ==(Market a, Market b) => a.Equals(b);
+  public static bool operator !=(Market a, Market b) => !(a == b);
 }
