@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using TraderPlatform.Abstracts.EventArgs;
 using TraderPlatform.Abstracts.Interfaces;
 
 namespace TraderPlatform.Abstracts.Models;
@@ -8,6 +9,16 @@ namespace TraderPlatform.Abstracts.Models;
 /// </summary>
 public class Balance
 {
+  /// <summary>
+  /// Triggered when <see cref="AmountQuoteTotal"/> has changed.
+  /// </summary>
+  public event EventHandler? OnAmountQuoteTotalReset;
+
+  /// <summary>
+  /// Triggered when <see cref="AmountQuoteAvailable"/> has changed.
+  /// </summary>
+  public event EventHandler? OnAmountQuoteAvailableReset;
+
   /// <summary>
   /// The quote currency on which this balance instance is based.
   /// </summary>
@@ -50,7 +61,7 @@ public class Balance
 
   /// <summary>
   /// Add an <see cref="Allocation"/> to the <see cref="Allocations"/> collection.
-  /// Note that <see cref="AmountQuoteTotal"/> and <see cref="AmountQuoteAvailable"/> will become outdated.
+  /// Note that <see cref="AmountQuoteTotal"/> and <see cref="AmountQuoteAvailable"/> will be reset and related events will be triggered.
   /// </summary>
   /// <param name="allocation">The <see cref="Allocation"/> to add.</param>
   /// <exception cref="Exceptions.InvalidObjectException"></exception>
@@ -67,28 +78,56 @@ public class Balance
       throw new Exceptions.ObjectAlreadyExistsException("An allocation in this market already exists.");
     }
 
+    allocation.OnPriceUpdate += ResetAmountQuoteTotal;
+    allocation.OnPriceUpdate += ResetAmountQuoteAvailable;
+
+    allocation.OnAmountUpdate += ResetAmountQuoteTotal;
+    allocation.OnAmountAvailableUpdate += ResetAmountQuoteAvailable;
+
     allocations.Add(allocation);
 
-    amountQuoteTotal = null;
-    amountQuoteAvailable = null;
+    ResetAmountQuoteTotal(this);
+    ResetAmountQuoteAvailable(this);
   }
 
   /// <summary>
   /// Remove an <see cref="Allocation"/> from the <see cref="Allocations"/> collection.
-  /// Note that <see cref="AmountQuoteTotal"/> and <see cref="AmountQuoteAvailable"/> will become outdated.
+  /// Note that <see cref="AmountQuoteTotal"/> and <see cref="AmountQuoteAvailable"/> will be reset and related events will be triggered.
   /// </summary>
   /// <param name="market">The <see cref="IMarket"/> to remove allocation of.</param>
-  /// <returns>True if the <see cref="Allocation"/> was removed. False if the <see cref="Allocation"/> didn't exist.</returns>
-  public bool RemoveAllocation(Market market)
+  public void RemoveAllocation(Market market)
   {
-    if (allocations.RemoveAll(alloc => alloc.Market.Equals(market)) > 0)
-    {
-      amountQuoteTotal = null;
-      amountQuoteAvailable = null;
+    var allocsToRemove = allocations.Where(alloc => alloc.Market.Equals(market)).ToList();
 
-      return true;
+    foreach (Allocation allocation in allocsToRemove)
+    {
+      allocation.OnPriceUpdate -= ResetAmountQuoteTotal;
+      allocation.OnPriceUpdate -= ResetAmountQuoteAvailable;
+
+      allocation.OnAmountUpdate -= ResetAmountQuoteTotal;
+      allocation.OnAmountAvailableUpdate -= ResetAmountQuoteAvailable;
+
+      allocations.Remove(allocation);
     }
 
-    return false;
+    if (allocsToRemove.Count > 0)
+    {
+      ResetAmountQuoteTotal(this);
+      ResetAmountQuoteAvailable(this);
+    }
+  }
+
+  private void ResetAmountQuoteTotal(object? sender, NumberUpdateEventArgs? e = null)
+  {
+    amountQuoteTotal = null;
+
+    OnAmountQuoteTotalReset?.Invoke(this, new());
+  }
+
+  private void ResetAmountQuoteAvailable(object? sender, NumberUpdateEventArgs? e = null)
+  {
+    amountQuoteAvailable = null;
+
+    OnAmountQuoteAvailableReset?.Invoke(this, new());
   }
 }
