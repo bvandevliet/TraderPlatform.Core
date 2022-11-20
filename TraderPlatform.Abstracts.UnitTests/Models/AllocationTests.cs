@@ -29,9 +29,9 @@ public class AllocationTests
       OnAmountAvailableUpdate += (sender, e) => amountAvailableUpdate = true;
     }
 
-    internal bool PriceUpdateEventTriggered() => priceUpdate || (priceUpdate = false);
-    internal bool AmountUpdateEventTriggered() => amountUpdate || (amountUpdate = false);
-    internal bool AmountAvailableUpdateEventTriggered() => amountAvailableUpdate || (amountAvailableUpdate = false);
+    internal bool PriceUpdateEventTriggered() => priceUpdate && !(priceUpdate = false);
+    internal bool AmountUpdateEventTriggered() => amountUpdate && !(amountUpdate = false);
+    internal bool AmountAvailableUpdateEventTriggered() => amountAvailableUpdate && !(amountAvailableUpdate = false);
   }
 
   [TestMethod]
