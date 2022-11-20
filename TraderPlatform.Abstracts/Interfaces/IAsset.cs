@@ -3,7 +3,7 @@ namespace TraderPlatform.Abstracts.Interfaces;
 /// <summary>
 /// Represents a currency.
 /// </summary>
-public interface IAsset
+public interface IAsset : IEquatable<IAsset>
 {
   /// <summary>
   /// Short version of the asset name used in market names.

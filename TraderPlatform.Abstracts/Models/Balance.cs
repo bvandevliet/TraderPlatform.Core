@@ -95,7 +95,7 @@ public class Balance
   /// Note that <see cref="AmountQuoteTotal"/> and <see cref="AmountQuoteAvailable"/> will be reset and related events will be triggered.
   /// </summary>
   /// <param name="market">The <see cref="IMarket"/> to remove allocation of.</param>
-  public void RemoveAllocation(Market market)
+  public void RemoveAllocation(IMarket market)
   {
     var allocsToRemove = allocations.Where(alloc => alloc.Market.Equals(market)).ToList();
 

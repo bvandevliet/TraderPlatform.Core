@@ -3,7 +3,7 @@ namespace TraderPlatform.Abstracts.Interfaces;
 /// <summary>
 /// Pair of <see cref="IAsset"/> instances, one for quote currency and one for base currency.
 /// </summary>
-public interface IMarket
+public interface IMarket : IEquatable<IMarket>
 {
   /// <summary>
   /// The quote currency to value <see cref="BaseCurrency"/> against.

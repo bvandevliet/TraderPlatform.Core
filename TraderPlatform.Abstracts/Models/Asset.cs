@@ -3,7 +3,9 @@ using TraderPlatform.Abstracts.Interfaces;
 namespace TraderPlatform.Abstracts.Models;
 
 /// <inheritdoc cref="IAsset"/>
+#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
 public class Asset : IAsset
+#pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
 {
   /// <inheritdoc/>
   public string Symbol { get; set; }
@@ -22,8 +24,8 @@ public class Asset : IAsset
     Name = name ?? string.Empty;
   }
 
-  public override bool Equals(object? obj) =>
-    obj is not null and IAsset o && Symbol == o.Symbol;
+  public bool Equals(IAsset? obj) =>
+    obj is not null && Symbol == obj.Symbol;
 
   public override int GetHashCode() => Symbol.GetHashCode();
 
