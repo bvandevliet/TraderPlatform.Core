@@ -11,6 +11,11 @@ public class Market : IMarket
   /// <inheritdoc/>
   public IAsset BaseCurrency { get; set; }
 
+  /// <summary>
+  /// <inheritdoc cref="IMarket"/>
+  /// </summary>
+  /// <param name="quoteCurrency"><inheritdoc cref="QuoteCurrency"/></param>
+  /// <param name="baseCurrency"><inheritdoc cref="BaseCurrency"/></param>
   public Market(IAsset quoteCurrency, IAsset baseCurrency)
   {
     QuoteCurrency = quoteCurrency;
