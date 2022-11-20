@@ -18,9 +18,9 @@ public class Market : IMarket
   }
 
   public override bool Equals(object? obj) =>
-    obj is not null and IMarket
-      && QuoteCurrency.Symbol == ((IMarket)obj).QuoteCurrency.Symbol
-      && BaseCurrency.Symbol == ((IMarket)obj).BaseCurrency.Symbol;
+    obj is not null and IMarket o
+      && QuoteCurrency.Symbol == o.QuoteCurrency.Symbol
+      && BaseCurrency.Symbol == o.BaseCurrency.Symbol;
 
   public override int GetHashCode() =>
     $"{QuoteCurrency.Symbol}{BaseCurrency.Symbol}".GetHashCode();

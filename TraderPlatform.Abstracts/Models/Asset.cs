@@ -23,7 +23,7 @@ public class Asset : IAsset
   }
 
   public override bool Equals(object? obj) =>
-    obj is not null and IAsset && Symbol == ((IAsset)obj).Symbol;
+    obj is not null and IAsset o && Symbol == o.Symbol;
 
   public override int GetHashCode() => Symbol.GetHashCode();
 
