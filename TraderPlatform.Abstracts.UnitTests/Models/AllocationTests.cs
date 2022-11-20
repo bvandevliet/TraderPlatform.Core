@@ -24,9 +24,9 @@ public class AllocationTests
       decimal? amountAvailable = null)
       : base(market, price, amount, amountAvailable)
     {
-      PriceUpdate += (sender, e) => priceUpdate = true;
-      AmountUpdate += (sender, e) => amountUpdate = true;
-      AmountAvailableUpdate += (sender, e) => amountAvailableUpdate = true;
+      OnPriceUpdate += (sender, e) => priceUpdate = true;
+      OnAmountUpdate += (sender, e) => amountUpdate = true;
+      OnAmountAvailableUpdate += (sender, e) => amountAvailableUpdate = true;
     }
 
     internal bool PriceUpdateEventTriggered() => priceUpdate || (priceUpdate = false);

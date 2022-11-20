@@ -12,19 +12,19 @@ public class Allocation : ITickerPrice, IPosition
   /// Triggered when <see cref="Price"/> has changed.
   /// Note that <see cref="amountQuote"/> and <see cref="amountQuoteAvailable"/> will also become outdated.
   /// </summary>
-  public event EventHandler<NumberUpdateEventArgs>? PriceUpdate;
+  public event EventHandler<NumberUpdateEventArgs>? OnPriceUpdate;
 
   /// <summary>
   /// Triggered when <see cref="Amount"/> has changed.
   /// Note that <see cref="amountQuote"/> will also become outdated.
   /// </summary>
-  public event EventHandler<NumberUpdateEventArgs>? AmountUpdate;
+  public event EventHandler<NumberUpdateEventArgs>? OnAmountUpdate;
 
   /// <summary>
   /// Triggered when <see cref="AmountAvailable"/> has changed.
   /// Note that <see cref="amountQuoteAvailable"/> will also become outdated.
   /// </summary>
-  public event EventHandler<NumberUpdateEventArgs>? AmountAvailableUpdate;
+  public event EventHandler<NumberUpdateEventArgs>? OnAmountAvailableUpdate;
 
   /// <summary>
   /// The market this instance represents an allocation in.
@@ -113,7 +113,7 @@ public class Allocation : ITickerPrice, IPosition
       amountQuote = null;
       amountQuoteAvailable = null;
 
-      PriceUpdate?.Invoke(this, new(oldValue, newValue));
+      OnPriceUpdate?.Invoke(this, new(oldValue, newValue));
     }
   }
 
@@ -126,7 +126,7 @@ public class Allocation : ITickerPrice, IPosition
     {
       amountQuote = null;
 
-      AmountUpdate?.Invoke(this, new(amount, newValue));
+      OnAmountUpdate?.Invoke(this, new(amount, newValue));
     }
   }
 
@@ -139,7 +139,7 @@ public class Allocation : ITickerPrice, IPosition
     {
       amountQuoteAvailable = null;
 
-      AmountAvailableUpdate?.Invoke(this, new(amountAvailable, newValue));
+      OnAmountAvailableUpdate?.Invoke(this, new(amountAvailable, newValue));
     }
   }
 }
