@@ -60,6 +60,14 @@ public class Balance
   }
 
   /// <summary>
+  /// Get an <see cref="Allocation"/> for a given <see cref="IMarket"/> if exists.
+  /// </summary>
+  /// <param name="market">The <see cref="IMarket"/> to find allocation of.</param>
+  /// <returns></returns>
+  public Allocation? GetAllocation(IMarket market) =>
+    allocations.Find(alloc => alloc.Market.Equals(market));
+
+  /// <summary>
   /// Add an <see cref="Allocation"/> to the <see cref="Allocations"/> collection.
   /// Note that <see cref="AmountQuoteTotal"/> and <see cref="AmountQuoteAvailable"/> will be reset and related events will be triggered.
   /// </summary>
@@ -97,9 +105,9 @@ public class Balance
   /// <param name="market">The <see cref="IMarket"/> to remove allocation of.</param>
   public void RemoveAllocation(IMarket market)
   {
-    var allocsToRemove = allocations.Where(alloc => alloc.Market.Equals(market)).ToList();
+    Allocation? allocation = GetAllocation(market);
 
-    foreach (Allocation allocation in allocsToRemove)
+    if (allocation != null)
     {
       allocation.OnPriceUpdate -= ResetAmountQuoteTotal;
       allocation.OnPriceUpdate -= ResetAmountQuoteAvailable;
@@ -108,10 +116,7 @@ public class Balance
       allocation.OnAmountAvailableUpdate -= ResetAmountQuoteAvailable;
 
       allocations.Remove(allocation);
-    }
 
-    if (allocsToRemove.Count > 0)
-    {
       ResetAmountQuoteTotal(this);
       ResetAmountQuoteAvailable(this);
     }
