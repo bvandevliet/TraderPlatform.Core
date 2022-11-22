@@ -78,6 +78,10 @@ public class BalanceTests
 
     balance.AddAllocation(alloc);
 
+    // Test amount quote values.
+    Assert.AreEqual(0 * 5, balance.AmountQuoteTotal);
+    Assert.AreEqual(0 * 5, balance.AmountQuoteAvailable);
+
     // Reset event states.
     balance.AmountQuoteTotalResetEventTriggered();
     balance.AmountQuoteAvailableResetEventTriggered();
@@ -88,8 +92,9 @@ public class BalanceTests
     Assert.IsTrue(balance.AmountQuoteTotalResetEventTriggered());
     Assert.IsTrue(balance.AmountQuoteAvailableResetEventTriggered());
 
-    // Allocation should be removed leaving one.
-    Assert.AreEqual(1, balance.Allocations.Count);
+    // Test amount quote values.
+    Assert.AreEqual(5 * 5, balance.AmountQuoteTotal);
+    Assert.AreEqual(5 * 5, balance.AmountQuoteAvailable);
   }
 
   [TestMethod]
@@ -101,6 +106,10 @@ public class BalanceTests
 
     balance.AddAllocation(alloc);
 
+    // Test amount quote values.
+    Assert.AreEqual(5 * 0, balance.AmountQuoteTotal);
+    Assert.AreEqual(5 * 0, balance.AmountQuoteAvailable);
+
     // Reset event states.
     balance.AmountQuoteTotalResetEventTriggered();
     balance.AmountQuoteAvailableResetEventTriggered();
@@ -111,8 +120,9 @@ public class BalanceTests
     Assert.IsTrue(balance.AmountQuoteTotalResetEventTriggered());
     Assert.IsFalse(balance.AmountQuoteAvailableResetEventTriggered());
 
-    // Allocation should be removed leaving one.
-    Assert.AreEqual(1, balance.Allocations.Count);
+    // Test amount quote values.
+    Assert.AreEqual(5 * 5, balance.AmountQuoteTotal);
+    Assert.AreEqual(5 * 0, balance.AmountQuoteAvailable);
   }
 
   [TestMethod]
@@ -124,6 +134,10 @@ public class BalanceTests
 
     balance.AddAllocation(alloc);
 
+    // Test amount quote values.
+    Assert.AreEqual(5 * 5, balance.AmountQuoteTotal);
+    Assert.AreEqual(5 * 0, balance.AmountQuoteAvailable);
+
     // Reset event states.
     balance.AmountQuoteTotalResetEventTriggered();
     balance.AmountQuoteAvailableResetEventTriggered();
@@ -134,8 +148,9 @@ public class BalanceTests
     Assert.IsFalse(balance.AmountQuoteTotalResetEventTriggered());
     Assert.IsTrue(balance.AmountQuoteAvailableResetEventTriggered());
 
-    // Allocation should be removed leaving one.
-    Assert.AreEqual(1, balance.Allocations.Count);
+    // Test amount quote values.
+    Assert.AreEqual(5 * 5, balance.AmountQuoteTotal);
+    Assert.AreEqual(5 * 5, balance.AmountQuoteAvailable);
   }
 
   [TestMethod]
