@@ -31,13 +31,13 @@ public interface IExchangeService
 
   Task<IOrder> NewOrder(IMarket market, OrderSide side, OrderType type, IOrderArgs orderArgs);
 
-  Task<IOrder?> GetOrder(string orderId, IMarket? market);
+  Task<IOrder?> GetOrder(string orderId, IMarket? market = null);
 
-  Task<IOrder?> CancelOrder(string orderId, IMarket? market);
+  Task<IOrder?> CancelOrder(string orderId, IMarket? market = null);
 
-  Task<IEnumerable<IOrder>> GetOpenOrders(IMarket? market);
+  Task<IEnumerable<IOrder>> GetOpenOrders(IMarket? market = null);
 
-  Task<IEnumerable<IOrder>> CancelAllOpenOrders(IMarket? market);
+  Task<IEnumerable<IOrder>> CancelAllOpenOrders(IMarket? market = null);
 
-  Task<IEnumerable<IOrder>> SellAllPositions(IAsset? asset);
+  Task<IEnumerable<IOrder>> SellAllPositions(IAsset? asset = null);
 }
