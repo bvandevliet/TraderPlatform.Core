@@ -9,9 +9,4 @@ public interface IPosition
   /// Total amount.
   /// </summary>
   decimal Amount { get; }
-
-  /// <summary>
-  /// Amount freely available.
-  /// </summary>
-  decimal AmountAvailable { get; }
 }

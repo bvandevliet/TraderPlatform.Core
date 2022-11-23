@@ -32,7 +32,7 @@ public class Balance
 
   private decimal? amountQuoteTotal;
   /// <summary>
-  /// Total amount in quote currency.
+  /// Total value of balance in quote currency.
   /// </summary>
   public decimal AmountQuoteTotal
   {
@@ -45,7 +45,7 @@ public class Balance
   /// </summary>
   public decimal AmountQuoteAvailable
   {
-    get => amountQuoteAvailable ??= Allocations.Sum(alloc => alloc.AmountQuoteAvailable);
+    get => amountQuoteAvailable ??= GetAllocation(QuoteCurrency)?.AmountQuote ?? 0;
   }
 
   /// <summary>
@@ -62,14 +62,14 @@ public class Balance
   /// <summary>
   /// Get an <see cref="Allocation"/> for a given <see cref="IMarket"/> if exists.
   /// </summary>
-  /// <param name="market">The <see cref="IMarket"/> to find allocation of.</param>
+  /// <param name="asset">The <see cref="IAsset"/> to find allocation of.</param>
   /// <returns></returns>
-  public Allocation? GetAllocation(IMarket market) =>
-    allocations.Find(alloc => alloc.Market.Equals(market));
+  public Allocation? GetAllocation(IAsset asset) =>
+    allocations.Find(alloc => alloc.Market.BaseCurrency.Equals(asset));
 
   /// <summary>
   /// Add an <see cref="Allocation"/> to the <see cref="Allocations"/> collection.
-  /// Note that <see cref="AmountQuoteTotal"/> and <see cref="AmountQuoteAvailable"/> will be reset and related events will be triggered.
+  /// Note that <see cref="AmountQuoteTotal"/> will be reset and related events will be triggered.
   /// </summary>
   /// <param name="allocation">The <see cref="Allocation"/> to add.</param>
   /// <exception cref="Exceptions.InvalidObjectException"></exception>
@@ -87,38 +87,48 @@ public class Balance
     }
 
     allocation.OnPriceUpdate += ResetAmountQuoteTotal;
-    allocation.OnPriceUpdate += ResetAmountQuoteAvailable;
 
     allocation.OnAmountUpdate += ResetAmountQuoteTotal;
-    allocation.OnAmountAvailableUpdate += ResetAmountQuoteAvailable;
+
+    if (allocation.Market.BaseCurrency.Equals(QuoteCurrency))
+    {
+      allocation.OnAmountUpdate += ResetAmountQuoteAvailable;
+    }
 
     allocations.Add(allocation);
 
     ResetAmountQuoteTotal(this);
-    ResetAmountQuoteAvailable(this);
+
+    if (allocation.Market.BaseCurrency.Equals(QuoteCurrency))
+    {
+      ResetAmountQuoteAvailable(this);
+    }
   }
 
   /// <summary>
   /// Remove an <see cref="Allocation"/> from the <see cref="Allocations"/> collection.
-  /// Note that <see cref="AmountQuoteTotal"/> and <see cref="AmountQuoteAvailable"/> will be reset and related events will be triggered.
+  /// Note that <see cref="AmountQuoteTotal"/> will be reset and related events will be triggered.
   /// </summary>
-  /// <param name="market">The <see cref="IMarket"/> to remove allocation of.</param>
-  public void RemoveAllocation(IMarket market)
+  /// <param name="asset">The <see cref="IAsset"/> to remove allocation of.</param>
+  public void RemoveAllocation(IAsset asset)
   {
-    Allocation? allocation = GetAllocation(market);
+    Allocation? allocation = GetAllocation(asset);
 
     if (allocation != null)
     {
       allocation.OnPriceUpdate -= ResetAmountQuoteTotal;
-      allocation.OnPriceUpdate -= ResetAmountQuoteAvailable;
 
       allocation.OnAmountUpdate -= ResetAmountQuoteTotal;
-      allocation.OnAmountAvailableUpdate -= ResetAmountQuoteAvailable;
+      allocation.OnAmountUpdate -= ResetAmountQuoteAvailable;
 
       allocations.Remove(allocation);
 
       ResetAmountQuoteTotal(this);
-      ResetAmountQuoteAvailable(this);
+
+      if (allocation.Market.BaseCurrency.Equals(QuoteCurrency))
+      {
+        ResetAmountQuoteAvailable(this);
+      }
     }
   }
 

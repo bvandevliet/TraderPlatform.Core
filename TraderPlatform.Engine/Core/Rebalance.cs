@@ -15,14 +15,14 @@ public static partial class Trader
   {
     foreach (Allocation curAlloc in curBalance.Allocations)
     {
-      Allocation newAlloc = newBalance.GetAllocation(curAlloc.Market) ?? new(curAlloc.Market, curAlloc.Price, 0);
+      Allocation newAlloc = newBalance.GetAllocation(curAlloc.Market.BaseCurrency) ?? new(curAlloc.Market, curAlloc.Price, 0);
 
       yield return GetAllocationQuoteDiff(newAlloc, curAlloc);
     }
 
     foreach (Allocation newAlloc in newBalance.Allocations)
     {
-      Allocation? curAlloc = curBalance.GetAllocation(newAlloc.Market);
+      Allocation? curAlloc = curBalance.GetAllocation(newAlloc.Market.BaseCurrency);
 
       if (curAlloc != null)
       {
