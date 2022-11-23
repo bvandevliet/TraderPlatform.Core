@@ -92,6 +92,8 @@ public class Balance
 
     if (allocation.Market.BaseCurrency.Equals(QuoteCurrency))
     {
+      allocation.OnAmountUpdate += ResetAmountQuoteAvailable;
+
       allocation.OnAmountAvailableUpdate += ResetAmountQuoteAvailable;
     }
 
@@ -119,6 +121,8 @@ public class Balance
       allocation.OnPriceUpdate -= ResetAmountQuoteTotal;
 
       allocation.OnAmountUpdate -= ResetAmountQuoteTotal;
+      allocation.OnAmountUpdate -= ResetAmountQuoteAvailable;
+
       allocation.OnAmountAvailableUpdate -= ResetAmountQuoteAvailable;
 
       allocations.Remove(allocation);
