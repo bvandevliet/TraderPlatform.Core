@@ -72,8 +72,15 @@ public static partial class Trader
 
     var sellTasks = new List<Task<IOrder>>();
 
-    foreach (KeyValuePair<Allocation, decimal> quoteDiff in GetAllocationQuoteDiffs(newBalance, curBalance))
+    var quoteDiffs = GetAllocationQuoteDiffs(newBalance, curBalance);
+
+    foreach (KeyValuePair<Allocation, decimal> quoteDiff in quoteDiffs)
     {
+      if (quoteDiff.Key.Market.BaseCurrency == @this.QuoteCurrency)
+      {
+        continue;
+      }
+
       if (quoteDiff.Value > 0)
       {
         // Need to sell since we own too many.
@@ -83,7 +90,7 @@ public static partial class Trader
           Abstracts.Enums.OrderType.Market,
           new OrderArgs
           {
-            AmountQuote = Math.Abs(quoteDiff.Value),
+            AmountQuote = quoteDiff.Value,
           })
           .ContinueWith(sellTask => @this.VerifyOrderEnded(sellTask.Result)).Unwrap());
       }
@@ -98,7 +105,30 @@ public static partial class Trader
     IOrder[] sellResults = await Task.WhenAll(sellTasks);
 
     // Compensate for spread/slippage ..
+    curBalance = await @this.GetBalance();
+
+    var buyTasks = new List<Task<IOrder>>();
+
+    quoteDiffs = GetAllocationQuoteDiffs(newBalance, curBalance)
+      .Where(quoteDiff => quoteDiff.Key.Market.BaseCurrency != @this.QuoteCurrency && quoteDiff.Value < 0);
+
+    decimal totalBuy = quoteDiffs.Sum(quoteDiff => quoteDiff.Value);
+
+    foreach (KeyValuePair<Allocation, decimal> quoteDiff in quoteDiffs)
+    {
+      // Need to buy since we own too few.
+      buyTasks.Add(@this.NewOrder(
+        quoteDiff.Key.Market,
+        Abstracts.Enums.OrderSide.Buy,
+        Abstracts.Enums.OrderType.Market,
+        new OrderArgs
+        {
+          AmountQuote = curBalance.AmountQuoteAvailable * quoteDiff.Value / totalBuy,
+        })
+        .ContinueWith(buyTask => @this.VerifyOrderEnded(buyTask.Result)).Unwrap());
+    }
 
     // Buy ..
+    IOrder[] buyResults = await Task.WhenAll(buyTasks);
   }
 }
