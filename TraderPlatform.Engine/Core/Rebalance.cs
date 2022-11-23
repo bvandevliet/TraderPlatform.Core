@@ -126,8 +126,7 @@ public static partial class Trader
           // Compensate for spread/slippage.
           // Dividing negative by negative results in positive.
           AmountQuote = curBalance.AmountQuoteAvailable * quoteDiff.Value / totalBuy,
-        })
-        .ContinueWith(buyTask => @this.VerifyOrderEnded(buyTask.Result)).Unwrap());
+        }));
     }
 
     // Buy ..
