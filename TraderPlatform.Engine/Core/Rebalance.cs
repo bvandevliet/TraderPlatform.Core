@@ -15,14 +15,27 @@ public static partial class Trader
   {
     foreach (Allocation curAlloc in curBalance.Allocations)
     {
-      Allocation fallbackAlloc = new(curAlloc.Market, curAlloc.Price, 0);
-
-      Allocation newAlloc = newBalance.Allocations.FirstOrDefault(alloc => alloc.Market.Equals(curAlloc.Market), fallbackAlloc);
+      Allocation newAlloc = newBalance.GetAllocation(curAlloc.Market) ?? new(curAlloc.Market, curAlloc.Price, 0);
 
       yield return GetAllocationQuoteDiff(newAlloc, curAlloc);
     }
 
-    // Add missing !!
+    foreach (Allocation newAlloc in newBalance.Allocations)
+    {
+      Allocation? curAlloc = curBalance.GetAllocation(newAlloc.Market);
+
+      if (curAlloc != null)
+      {
+        // Already covered in previous foreach.
+        continue;
+      }
+      else
+      {
+        curAlloc = new(newAlloc.Market, newAlloc.Price, 0);
+      }
+
+      yield return GetAllocationQuoteDiff(curAlloc, newAlloc);
+    }
   }
 
   public static async Task<IOrder> VerifyOrderEnded(this IExchangeService @this, IOrder order)
