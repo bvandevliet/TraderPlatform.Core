@@ -45,7 +45,7 @@ public class Balance
   /// </summary>
   public decimal AmountQuoteAvailable
   {
-    get => amountQuoteAvailable ??= GetAllocation(QuoteCurrency)?.AmountQuoteAvailable ?? 0;
+    get => amountQuoteAvailable ??= GetAllocation(QuoteCurrency)?.AmountQuote ?? 0;
   }
 
   /// <summary>
@@ -69,7 +69,7 @@ public class Balance
 
   /// <summary>
   /// Add an <see cref="Allocation"/> to the <see cref="Allocations"/> collection.
-  /// Note that <see cref="AmountQuoteTotal"/> and <see cref="AmountQuoteAvailable"/> will be reset and related events will be triggered.
+  /// Note that <see cref="AmountQuoteTotal"/> will be reset and related events will be triggered.
   /// </summary>
   /// <param name="allocation">The <see cref="Allocation"/> to add.</param>
   /// <exception cref="Exceptions.InvalidObjectException"></exception>
@@ -93,8 +93,6 @@ public class Balance
     if (allocation.Market.BaseCurrency.Equals(QuoteCurrency))
     {
       allocation.OnAmountUpdate += ResetAmountQuoteAvailable;
-
-      allocation.OnAmountAvailableUpdate += ResetAmountQuoteAvailable;
     }
 
     allocations.Add(allocation);
@@ -109,7 +107,7 @@ public class Balance
 
   /// <summary>
   /// Remove an <see cref="Allocation"/> from the <see cref="Allocations"/> collection.
-  /// Note that <see cref="AmountQuoteTotal"/> and <see cref="AmountQuoteAvailable"/> will be reset and related events will be triggered.
+  /// Note that <see cref="AmountQuoteTotal"/> will be reset and related events will be triggered.
   /// </summary>
   /// <param name="asset">The <see cref="IAsset"/> to remove allocation of.</param>
   public void RemoveAllocation(IAsset asset)
@@ -122,8 +120,6 @@ public class Balance
 
       allocation.OnAmountUpdate -= ResetAmountQuoteTotal;
       allocation.OnAmountUpdate -= ResetAmountQuoteAvailable;
-
-      allocation.OnAmountAvailableUpdate -= ResetAmountQuoteAvailable;
 
       allocations.Remove(allocation);
 

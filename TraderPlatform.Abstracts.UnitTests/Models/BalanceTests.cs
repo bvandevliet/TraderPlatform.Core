@@ -129,62 +129,6 @@ public class BalanceTests
   }
 
   [TestMethod]
-  public void UpdateAllocation_AmountAvailable()
-  {
-    var balance = new BalanceWrapper(quoteCurrency);
-
-    var alloc = new Allocation(new Market(quoteCurrency, new Asset("BTC")), 5, 5, 0);
-
-    balance.AddAllocation(alloc);
-
-    // Test amount quote value.
-    Assert.AreEqual(5 * 5, balance.AmountQuoteTotal);
-
-    // Reset event states.
-    balance.AmountQuoteTotalResetEventTriggered();
-    balance.AmountQuoteAvailableResetEventTriggered();
-
-    alloc.AmountAvailable = 5; // was 0;
-
-    // Test if events are raised as expected.
-    Assert.IsFalse(balance.AmountQuoteTotalResetEventTriggered());
-    Assert.IsFalse(balance.AmountQuoteAvailableResetEventTriggered());
-
-    // Test amount quote value.
-    Assert.AreEqual(5 * 5, balance.AmountQuoteTotal);
-  }
-
-  [TestMethod]
-  public void UpdateAllocation_AmountQuoteAvailable()
-  {
-    var balance = new BalanceWrapper(quoteCurrency);
-
-    var alloc0 = new Allocation(new Market(quoteCurrency, quoteCurrency), 1, 10);
-    var alloc1 = new Allocation(new Market(quoteCurrency, new Asset("BTC")), 5, 5, 0);
-
-    balance.AddAllocation(alloc0);
-    balance.AddAllocation(alloc1);
-
-    // Test amount quote value.
-    Assert.AreEqual(10, balance.AmountQuoteAvailable);
-    Assert.AreEqual(10 + 5 * 5, balance.AmountQuoteTotal);
-
-    // Reset event states.
-    balance.AmountQuoteTotalResetEventTriggered();
-    balance.AmountQuoteAvailableResetEventTriggered();
-
-    alloc0.AmountAvailable = 5; // was 10;
-
-    // Test if events are raised as expected.
-    Assert.IsTrue(balance.AmountQuoteTotalResetEventTriggered());
-    Assert.IsTrue(balance.AmountQuoteAvailableResetEventTriggered());
-
-    // Test amount quote value.
-    Assert.AreEqual(10, balance.AmountQuoteAvailable);
-    Assert.AreEqual(5 * 5, balance.AmountQuoteTotal);
-  }
-
-  [TestMethod]
   public void AddAllocation_SameReferenceMultipleTimes()
   {
     var balance = new BalanceWrapper(quoteCurrency);
