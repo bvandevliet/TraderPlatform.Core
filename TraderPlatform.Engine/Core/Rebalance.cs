@@ -104,7 +104,7 @@ public static partial class Trader
     // Sell ..
     IOrder[] sellResults = await Task.WhenAll(sellTasks);
 
-    // Compensate for spread/slippage ..
+    // Fetch balance again in order to compensate for spread/slippage ..
     curBalance = await @this.GetBalance();
 
     var buyTasks = new List<Task<IOrder>>();
@@ -123,6 +123,8 @@ public static partial class Trader
         Abstracts.Enums.OrderType.Market,
         new OrderArgs
         {
+          // Compensate for spread/slippage.
+          // Dividing negative by negative results in positive.
           AmountQuote = curBalance.AmountQuoteAvailable * quoteDiff.Value / totalBuy,
         })
         .ContinueWith(buyTask => @this.VerifyOrderEnded(buyTask.Result)).Unwrap());
