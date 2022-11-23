@@ -25,6 +25,34 @@ public static partial class Trader
     // Add missing !!
   }
 
+  public static async Task<IOrder> VerifyOrderEnded(this IExchangeService @this, IOrder order)
+  {
+    int checks = 60;
+
+    while (
+      checks > 0 &&
+      order.Id != null &&
+      !order.Status.HasFlag(
+        Abstracts.Enums.OrderStatus.Canceled |
+        Abstracts.Enums.OrderStatus.Expired |
+        Abstracts.Enums.OrderStatus.Rejected |
+        Abstracts.Enums.OrderStatus.Filled))
+    {
+      Thread.Sleep(1);
+
+      order = await @this.GetOrder(order.Id!, order.Market) ?? order;
+
+      checks--;
+    }
+
+    if (checks == 0)
+    {
+      order = await @this.CancelOrder(order.Id!, order.Market) ?? order;
+    }
+
+    return order;
+  }
+
   public static async void Rebalance(this IExchangeService @this, Balance newBalance, Balance? currentBalance = null)
   {
     currentBalance ??= await @this.GetBalance();
@@ -43,7 +71,8 @@ public static partial class Trader
           new OrderArgs
           {
             AmountQuote = Math.Abs(quoteDiff.Value),
-          }));
+          })
+          .ContinueWith(sellTask => @this.VerifyOrderEnded(sellTask.Result)).Unwrap());
       }
       else
       {
