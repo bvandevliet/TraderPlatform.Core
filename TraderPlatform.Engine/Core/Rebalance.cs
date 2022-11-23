@@ -11,9 +11,9 @@ public static partial class Trader
     return new KeyValuePair<Allocation, decimal>(curAlloc, curAlloc.AmountQuote - newAlloc.AmountQuote);
   }
 
-  public static IEnumerable<KeyValuePair<Allocation, decimal>> GetAllocationQuoteDiffs(Balance newBalance, Balance currentBalance)
+  public static IEnumerable<KeyValuePair<Allocation, decimal>> GetAllocationQuoteDiffs(Balance newBalance, Balance curBalance)
   {
-    foreach (Allocation curAlloc in currentBalance.Allocations)
+    foreach (Allocation curAlloc in curBalance.Allocations)
     {
       Allocation fallbackAlloc = new(curAlloc.Market, curAlloc.Price, 0);
 
@@ -53,13 +53,13 @@ public static partial class Trader
     return order;
   }
 
-  public static async void Rebalance(this IExchangeService @this, Balance newBalance, Balance? currentBalance = null)
+  public static async void Rebalance(this IExchangeService @this, Balance newBalance, Balance? curBalance = null)
   {
-    currentBalance ??= await @this.GetBalance();
+    curBalance ??= await @this.GetBalance();
 
     var sellTasks = new List<Task<IOrder>>();
 
-    foreach (KeyValuePair<Allocation, decimal> quoteDiff in GetAllocationQuoteDiffs(newBalance, currentBalance))
+    foreach (KeyValuePair<Allocation, decimal> quoteDiff in GetAllocationQuoteDiffs(newBalance, curBalance))
     {
       if (quoteDiff.Value > 0)
       {
