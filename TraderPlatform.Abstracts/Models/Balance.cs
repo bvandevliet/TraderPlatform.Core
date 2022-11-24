@@ -110,7 +110,8 @@ public class Balance
   /// Note that <see cref="AmountQuoteTotal"/> will be reset and related events will be triggered.
   /// </summary>
   /// <param name="asset">The <see cref="IAsset"/> to remove allocation of.</param>
-  public void RemoveAllocation(IAsset asset)
+  /// <returns>The <see cref="Allocation"/> that was removed.</returns>
+  public Allocation? RemoveAllocation(IAsset asset)
   {
     Allocation? allocation = GetAllocation(asset);
 
@@ -130,6 +131,8 @@ public class Balance
         ResetAmountQuoteAvailable(this);
       }
     }
+
+    return allocation;
   }
 
   private void ResetAmountQuoteTotal(object? sender, NumberUpdateEventArgs? e = null)
