@@ -60,7 +60,7 @@ public class Balance
   }
 
   /// <summary>
-  /// Get an <see cref="Allocation"/> for a given <see cref="IMarket"/> if exists.
+  /// Get an <see cref="Allocation"/> for the given <paramref name="asset"/> if exists.
   /// </summary>
   /// <param name="asset">The <see cref="IAsset"/> to find allocation of.</param>
   /// <returns></returns>
@@ -68,7 +68,7 @@ public class Balance
     allocations.Find(alloc => alloc.Market.BaseCurrency.Equals(asset));
 
   /// <summary>
-  /// Add an <see cref="Allocation"/> to the <see cref="Allocations"/> collection.
+  /// Add <paramref name="allocation"/> to the <see cref="Allocations"/> collection.
   /// Note that <see cref="AmountQuoteTotal"/> will be reset and related events will be triggered.
   /// </summary>
   /// <param name="allocation">The <see cref="Allocation"/> to add.</param>
