@@ -148,7 +148,6 @@ public static partial class Trader
   /// </summary>
   /// <param name="this"></param>
   /// <param name="newBalance"></param>
-  /// <param name="curBalance"></param>
   /// <returns></returns>
   public static async Task<IOrder[]> BuyUnderages(this IExchangeService @this, Balance newBalance)
   {
