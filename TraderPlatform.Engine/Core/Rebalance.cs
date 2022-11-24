@@ -70,7 +70,7 @@ public static partial class Trader
         Abstracts.Enums.OrderStatus.Rejected |
         Abstracts.Enums.OrderStatus.Filled))
     {
-      Thread.Sleep(1000);
+      await Task.Delay(1000);
 
       order = await @this.GetOrder(order.Id!, order.Market) ?? order;
 
