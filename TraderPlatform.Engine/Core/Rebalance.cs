@@ -85,6 +85,38 @@ public static partial class Trader
     return order;
   }
 
+  public static IOrder ConstructSellOrder(this IExchangeService @this, KeyValuePair<Allocation, decimal> quoteDiff)
+  {
+    bool terminatePosition =
+      quoteDiff.Key.AmountQuote - quoteDiff.Value <= @this.MinimumOrderSize;
+
+    // Prevent dust.
+    OrderArgs orderArgs = !terminatePosition
+      ? new()
+      {
+        AmountQuote = quoteDiff.Value,
+      }
+      : new()
+      {
+        Amount = quoteDiff.Key.Amount,
+      };
+
+    // Expected fee.
+    decimal feeExpected = !terminatePosition
+      ? @this.TakerFee * quoteDiff.Value
+      : @this.TakerFee * quoteDiff.Key.AmountQuote;
+
+    // Sell order ..
+    return new Order(
+      quoteDiff.Key.Market,
+      Abstracts.Enums.OrderSide.Sell,
+      Abstracts.Enums.OrderType.Market,
+      orderArgs)
+    {
+      FeeExpected = feeExpected
+    };
+  }
+
   /// <summary>
   /// Sell pieces of oversized <see cref="Allocation"/>s in order for those to meet <paramref name="newBalance"/>.
   /// Completes when verified that all triggered sell orders are ended.
@@ -220,32 +252,8 @@ public static partial class Trader
       // Positive quote differences refer to oversized allocations.
       if (quoteDiff.Value >= @this.MinimumOrderSize)
       {
-        bool terminatePosition = quoteDiff.Key.AmountQuote - quoteDiff.Value <= @this.MinimumOrderSize;
-
-        // Prevent dust.
-        OrderArgs orderArgs = !terminatePosition
-          ? new()
-          {
-            AmountQuote = quoteDiff.Value,
-          }
-          : new()
-          {
-            Amount = quoteDiff.Key.Amount,
-          };
-
-        decimal feeExpected = !terminatePosition
-          ? @this.TakerFee * quoteDiff.Value
-          : @this.TakerFee * quoteDiff.Key.AmountQuote;
-
         // Sell order ..
-        yield return new Order(
-          quoteDiff.Key.Market,
-          Abstracts.Enums.OrderSide.Sell,
-          Abstracts.Enums.OrderType.Market,
-          orderArgs)
-        {
-          FeeExpected = feeExpected
-        };
+        yield return @this.ConstructSellOrder(quoteDiff);
       }
       // Negative quote differences refer to undersized allocations.
       else if (quoteDiff.Value <= -@this.MinimumOrderSize)
