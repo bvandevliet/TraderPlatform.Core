@@ -106,7 +106,7 @@ public static partial class Trader
     // The sell task loop ..
     foreach (KeyValuePair<Allocation, decimal> quoteDiff in quoteDiffs)
     {
-      if (quoteDiff.Key.Market.BaseCurrency == @this.QuoteCurrency)
+      if (quoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency))
       {
         // We can't sell quote currency for quote currency.
         continue;
