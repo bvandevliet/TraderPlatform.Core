@@ -115,15 +115,24 @@ public static partial class Trader
       // Positive quote differences refer to oversized allocations.
       if (quoteDiff.Value >= @this.MinimumOrderSize)
       {
+        // Prevent dust.
+        OrderArgs orderArgs =
+          quoteDiff.Key.AmountQuote - quoteDiff.Value > @this.MinimumOrderSize
+          ? new()
+          {
+            AmountQuote = quoteDiff.Value,
+          }
+          : new()
+          {
+            Amount = quoteDiff.Key.Amount,
+          };
+
         // Sell ..
         sellTasks.Add(@this.NewOrder(
           quoteDiff.Key.Market,
           Abstracts.Enums.OrderSide.Sell,
           Abstracts.Enums.OrderType.Market,
-          new OrderArgs
-          {
-            AmountQuote = quoteDiff.Value,
-          })
+          orderArgs)
           // Continue to verify sell order ended, within same task to optimize performance.
           .ContinueWith(sellTask => @this.VerifyOrderEnded(sellTask.Result)).Unwrap());
       }
