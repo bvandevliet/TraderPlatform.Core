@@ -56,9 +56,11 @@ public class BalanceTests
   {
     var balance = new BalanceWrapper(quoteCurrency);
 
+    var alloc0 = new Allocation(new Market(quoteCurrency, quoteCurrency), 1, 10);
     var alloc1 = new Allocation(new Market(quoteCurrency, new Asset("BTC")), 0, 0);
     var alloc2 = new Allocation(new Market(quoteCurrency, new Asset("ETH")), 0, 0);
 
+    balance.AddAllocation(alloc0);
     balance.AddAllocation(alloc1);
     balance.AddAllocation(alloc2);
 
@@ -71,6 +73,12 @@ public class BalanceTests
     // Test if events are raised as expected.
     Assert.IsTrue(balance.AmountQuoteTotalResetEventTriggered());
     Assert.IsFalse(balance.AmountQuoteAvailableResetEventTriggered());
+
+    balance.RemoveAllocation(quoteCurrency);
+
+    // Test if events are raised as expected.
+    Assert.IsTrue(balance.AmountQuoteTotalResetEventTriggered());
+    Assert.IsTrue(balance.AmountQuoteAvailableResetEventTriggered());
 
     // Allocation should be removed leaving one.
     Assert.AreEqual(1, balance.Allocations.Count);
