@@ -18,7 +18,7 @@ public static partial class Trader
   }
 
   /// <summary>
-  /// Get difference in quote currency between each new and current <see cref="Allocation"/> in <paramref name="newBalance"/> and <paramref name="curBalance"/>.
+  /// Get difference in quote currency between each new and current <see cref="Allocation"/> in respectively <paramref name="newBalance"/> and <paramref name="curBalance"/>.
   /// </summary>
   /// <param name="newBalance"></param>
   /// <param name="curBalance"></param>
@@ -86,29 +86,36 @@ public static partial class Trader
   }
 
   /// <summary>
-  /// Asynchronously performs a portfolio rebalance.
+  /// Sell pieces of oversized <see cref="Allocation"/>s in order for those to meet <paramref name="newBalance"/>.
+  /// Completes when verified that all triggered sell orders are ended.
   /// </summary>
   /// <param name="this"></param>
   /// <param name="newBalance"></param>
   /// <param name="curBalance"></param>
-  public static async Task Rebalance(this IExchangeService @this, Balance newBalance, Balance? curBalance = null)
+  /// <returns></returns>
+  public static async Task<IOrder[]> SellOveragesAndVerify(this IExchangeService @this, Balance newBalance, Balance? curBalance = null)
   {
+    // Fetch balance if not provided.
     curBalance ??= await @this.GetBalance();
+
+    // Get enumerable since we're iterating it just once.
+    IEnumerable<KeyValuePair<Allocation, decimal>> quoteDiffs = GetAllocationQuoteDiffs(newBalance, curBalance);
 
     var sellTasks = new List<Task<IOrder>>();
 
-    var quoteDiffs = GetAllocationQuoteDiffs(newBalance, curBalance);
-
+    // The sell task loop ..
     foreach (KeyValuePair<Allocation, decimal> quoteDiff in quoteDiffs)
     {
       if (quoteDiff.Key.Market.BaseCurrency == @this.QuoteCurrency)
       {
+        // We can't sell quote currency for quote currency.
         continue;
       }
 
-      if (quoteDiff.Value > 0)
+      // Positive quote differences refer to oversized allocations.
+      if (quoteDiff.Value >= @this.MinimumOrderSize)
       {
-        // Need to sell since we own too many.
+        // Sell ..
         sellTasks.Add(@this.NewOrder(
           quoteDiff.Key.Market,
           Abstracts.Enums.OrderSide.Sell,
@@ -117,44 +124,93 @@ public static partial class Trader
           {
             AmountQuote = quoteDiff.Value,
           })
+          // Continue to verify sell order ended, within same task to optimize performance.
           .ContinueWith(sellTask => @this.VerifyOrderEnded(sellTask.Result)).Unwrap());
-      }
-      else
-      {
-        // Need to buy since we own too few.
-        // But we need to compensate for spread/slippage first after sell orders are filled.
       }
     }
 
-    // Sell ..
-    IOrder[] sellResults = await Task.WhenAll(sellTasks);
+    return await Task.WhenAll(sellTasks);
+  }
 
-    // Fetch balance again in order to compensate for spread/slippage ..
-    curBalance = await @this.GetBalance();
+  /// <summary>
+  /// Buy to increase undersized <see cref="Allocation"/>s in order for those to meet <paramref name="newBalance"/>.
+  /// <see cref="Allocation"/> differences are scaled relative to available quote currency.
+  /// Completes when orders are placed.
+  /// </summary>
+  /// <param name="this"></param>
+  /// <param name="newBalance"></param>
+  /// <param name="curBalance"></param>
+  /// <returns></returns>
+  public static async Task<IOrder[]> BuyUnderages(this IExchangeService @this, Balance newBalance)
+  {
+    // Force fetch current balance.
+    Balance curBalance = await @this.GetBalance();
+
+    // Load in memory using .ToList(), to avoid re-enumerating since we're iterating it more than once.
+    // IS THIS REALLY THE PREFERED WAY ? !!
+    var quoteDiffs = GetAllocationQuoteDiffs(newBalance, curBalance).ToList();
+
+    // Absolute sum of all negative quote differences except of quote currency.
+    decimal totalBuy = Math.Abs(quoteDiffs
+      .FindAll(quoteDiff =>
+        !quoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency)
+        && quoteDiff.Value < 0)
+      .Sum(quoteDiff => quoteDiff.Value));
+
+    // Multiplication ratio to avoid potentially oversized buy order sizes.
+    decimal ratio = Math.Min(totalBuy, curBalance.AmountQuoteAvailable) / totalBuy;
 
     var buyTasks = new List<Task<IOrder>>();
 
-    quoteDiffs = GetAllocationQuoteDiffs(newBalance, curBalance)
-      .Where(quoteDiff => quoteDiff.Key.Market.BaseCurrency != @this.QuoteCurrency && quoteDiff.Value < 0);
-
-    decimal totalBuy = quoteDiffs.Sum(quoteDiff => quoteDiff.Value);
-
+    // The buy task loop ..
     foreach (KeyValuePair<Allocation, decimal> quoteDiff in quoteDiffs)
     {
-      // Need to buy since we own too few.
-      buyTasks.Add(@this.NewOrder(
-        quoteDiff.Key.Market,
-        Abstracts.Enums.OrderSide.Buy,
-        Abstracts.Enums.OrderType.Market,
-        new OrderArgs
-        {
-          // Compensate for spread/slippage.
-          // Dividing negative by negative results in positive.
-          AmountQuote = curBalance.AmountQuoteAvailable * quoteDiff.Value / totalBuy,
-        }));
+      if (quoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency))
+      {
+        // We can't buy quote currency with quote currency.
+        continue;
+      }
+
+      // Scale to avoid potentially oversized buy order sizes.
+      // First check eligibility as it is less expensive operation than the multiplication operation.
+      decimal amountQuote =
+        quoteDiff.Value <= -@this.MinimumOrderSize ? ratio * quoteDiff.Value : 0;
+
+      // Negative quote differences refer to undersized allocations.
+      if (amountQuote <= -@this.MinimumOrderSize)
+      {
+        // Buy ..
+        buyTasks.Add(@this.NewOrder(
+          quoteDiff.Key.Market,
+          Abstracts.Enums.OrderSide.Buy,
+          Abstracts.Enums.OrderType.Market,
+          new OrderArgs
+          {
+            AmountQuote = amountQuote,
+          }));
+      }
     }
 
-    // Buy ..
-    IOrder[] buyResults = await Task.WhenAll(buyTasks);
+    return await Task.WhenAll(buyTasks);
+  }
+
+  /// <summary>
+  /// Asynchronously performs a portfolio rebalance.
+  /// </summary>
+  /// <param name="this"></param>
+  /// <param name="newBalance"></param>
+  public static async Task<IEnumerable<IOrder>> Rebalance(this IExchangeService @this, Balance newBalance)
+  {
+    // Clear the path ..
+    await @this.CancelAllOpenOrders();
+
+    // Sell pieces of oversized allocations first,
+    // so we have sufficient quote currency available to buy with.
+    IOrder[] sellResults = await @this.SellOveragesAndVerify(newBalance);
+
+    // Then buy to increase undersized allocations.
+    IOrder[] buyResults = await @this.BuyUnderages(newBalance);
+
+    return sellResults.Concat(buyResults);
   }
 }
