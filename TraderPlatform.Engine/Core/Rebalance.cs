@@ -6,11 +6,23 @@ namespace TraderPlatform.Engine.Core;
 
 public static partial class Trader
 {
+  /// <summary>
+  /// Get difference in quote currency between <paramref name="newAlloc"/> and <paramref name="curAlloc"/>.
+  /// </summary>
+  /// <param name="newAlloc"></param>
+  /// <param name="curAlloc"></param>
+  /// <returns><paramref name="curAlloc"/> and its difference in quote currency compared to given <paramref name="newAlloc"/>.</returns>
   public static KeyValuePair<Allocation, decimal> GetAllocationQuoteDiff(Allocation newAlloc, Allocation curAlloc)
   {
     return new KeyValuePair<Allocation, decimal>(curAlloc, curAlloc.AmountQuote - newAlloc.AmountQuote);
   }
 
+  /// <summary>
+  /// Get difference in quote currency between each new and current <see cref="Allocation"/> in <paramref name="newBalance"/> and <paramref name="curBalance"/>.
+  /// </summary>
+  /// <param name="newBalance"></param>
+  /// <param name="curBalance"></param>
+  /// <returns>Collection of current <see cref="Allocation"/>s and their differences in quote currency compared to the new <see cref="Allocation"/>s.</returns>
   public static IEnumerable<KeyValuePair<Allocation, decimal>> GetAllocationQuoteDiffs(Balance newBalance, Balance curBalance)
   {
     foreach (Allocation curAlloc in curBalance.Allocations)
@@ -38,10 +50,17 @@ public static partial class Trader
     }
   }
 
-  public static async Task<IOrder> VerifyOrderEnded(this IExchangeService @this, IOrder order)
+  /// <summary>
+  /// A task that will complete when verified that the given <paramref name="order"/> is ended.
+  /// If the given order is not completed within given amount of <paramref name="checks"/>, it will be cancelled.
+  /// Every new check is performed one second after the previous has been resolved.
+  /// </summary>
+  /// <param name="this"></param>
+  /// <param name="order"></param>
+  /// <param name="checks"></param>
+  /// <returns>Completes when verified that the given <paramref name="order"/> is ended.</returns>
+  public static async Task<IOrder> VerifyOrderEnded(this IExchangeService @this, IOrder order, int checks = 60)
   {
-    int checks = 60;
-
     while (
       checks > 0 &&
       order.Id != null &&
@@ -51,7 +70,7 @@ public static partial class Trader
         Abstracts.Enums.OrderStatus.Rejected |
         Abstracts.Enums.OrderStatus.Filled))
     {
-      Thread.Sleep(1);
+      Thread.Sleep(1000);
 
       order = await @this.GetOrder(order.Id!, order.Market) ?? order;
 
@@ -66,7 +85,13 @@ public static partial class Trader
     return order;
   }
 
-  public static async void Rebalance(this IExchangeService @this, Balance newBalance, Balance? curBalance = null)
+  /// <summary>
+  /// Asynchronously performs a portfolio rebalance.
+  /// </summary>
+  /// <param name="this"></param>
+  /// <param name="newBalance"></param>
+  /// <param name="curBalance"></param>
+  public static async Task Rebalance(this IExchangeService @this, Balance newBalance, Balance? curBalance = null)
   {
     curBalance ??= await @this.GetBalance();
 
