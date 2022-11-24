@@ -202,6 +202,70 @@ public static partial class Trader
     return await Task.WhenAll(buyTasks);
   }
 
+  public static IEnumerable<IOrder> EstimateFee(this IExchangeService @this, Balance newBalance, Balance curBalance)
+  {
+    // Get enumerable since we're iterating it just once.
+    IEnumerable<KeyValuePair<Allocation, decimal>> quoteDiffs = GetAllocationQuoteDiffs(newBalance, curBalance);
+
+    // The order loop ..
+    foreach (KeyValuePair<Allocation, decimal> quoteDiff in quoteDiffs)
+    {
+      if (quoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency))
+      {
+        // We can't sell quote currency for quote currency
+        // and we can't buy quote currency with quote currency.
+        continue;
+      }
+
+      // Positive quote differences refer to oversized allocations.
+      if (quoteDiff.Value >= @this.MinimumOrderSize)
+      {
+        bool terminatePosition = quoteDiff.Key.AmountQuote - quoteDiff.Value <= @this.MinimumOrderSize;
+
+        // Prevent dust.
+        OrderArgs orderArgs = !terminatePosition
+          ? new()
+          {
+            AmountQuote = quoteDiff.Value,
+          }
+          : new()
+          {
+            Amount = quoteDiff.Key.Amount,
+          };
+
+        decimal feeExpected = !terminatePosition
+          ? @this.TakerFee * quoteDiff.Value
+          : @this.TakerFee * quoteDiff.Key.AmountQuote;
+
+        // Sell order ..
+        yield return new Order(
+          quoteDiff.Key.Market,
+          Abstracts.Enums.OrderSide.Sell,
+          Abstracts.Enums.OrderType.Market,
+          orderArgs)
+        {
+          FeeExpected = feeExpected
+        };
+      }
+      // Negative quote differences refer to undersized allocations.
+      else if (quoteDiff.Value <= -@this.MinimumOrderSize)
+      {
+        // Buy order ..
+        yield return new Order(
+          quoteDiff.Key.Market,
+          Abstracts.Enums.OrderSide.Sell,
+          Abstracts.Enums.OrderType.Market,
+          new OrderArgs
+          {
+            AmountQuote = quoteDiff.Value,
+          })
+        {
+          FeeExpected = quoteDiff.Value * @this.TakerFee,
+        };
+      }
+    }
+  }
+
   /// <summary>
   /// Asynchronously performs a portfolio rebalance.
   /// </summary>
