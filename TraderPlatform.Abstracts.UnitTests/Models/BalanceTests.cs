@@ -2,7 +2,7 @@ using TraderPlatform.Abstracts.Interfaces;
 
 namespace TraderPlatform.Abstracts.Models.Tests;
 
-[TestClass]
+[TestClass()]
 public class BalanceTests
 {
   private readonly Asset quoteCurrency = new("EUR");
@@ -24,7 +24,7 @@ public class BalanceTests
     internal bool AmountQuoteAvailableResetEventTriggered() => amountQuoteAvailableReset && !(amountQuoteAvailableReset = false);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void AddAllocation()
   {
     var balance = new BalanceWrapper(quoteCurrency);
@@ -50,7 +50,7 @@ public class BalanceTests
     Assert.AreEqual(3, balance.Allocations.Count);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void RemoveAllocation()
   {
     var balance = new BalanceWrapper(quoteCurrency);
@@ -83,7 +83,7 @@ public class BalanceTests
     Assert.AreEqual(1, balance.Allocations.Count);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void UpdateAllocation_Price()
   {
     var balance = new BalanceWrapper(quoteCurrency);
@@ -109,7 +109,7 @@ public class BalanceTests
     Assert.AreEqual(5 * 5, balance.AmountQuoteTotal);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void UpdateAllocation_Amount()
   {
     var balance = new BalanceWrapper(quoteCurrency);
@@ -135,7 +135,7 @@ public class BalanceTests
     Assert.AreEqual(5 * 5, balance.AmountQuoteTotal);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void UpdateAllocation_AmountQuote()
   {
     var balance = new BalanceWrapper(quoteCurrency);
@@ -161,7 +161,7 @@ public class BalanceTests
     Assert.AreEqual(20, balance.AmountQuoteTotal);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void AddAllocation_SameReferenceMultipleTimes()
   {
     var balance = new BalanceWrapper(quoteCurrency);
@@ -180,7 +180,7 @@ public class BalanceTests
     Assert.AreEqual(1, balance.Allocations.Count);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void AddAllocation_SameMarketReferenceMultipleTimes()
   {
     var balance = new BalanceWrapper(quoteCurrency);
@@ -202,7 +202,7 @@ public class BalanceTests
     Assert.AreEqual(1, balance.Allocations.Count);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void AddAllocation_SameMarketMultipleTimes()
   {
     var balance = new BalanceWrapper(quoteCurrency);
@@ -224,7 +224,7 @@ public class BalanceTests
     Assert.AreEqual(1, balance.Allocations.Count);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void AddAllocation_WrongQuoteCurrency()
   {
     var balance = new BalanceWrapper(quoteCurrency);

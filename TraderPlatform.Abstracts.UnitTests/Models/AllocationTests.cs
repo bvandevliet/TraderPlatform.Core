@@ -1,6 +1,6 @@
 namespace TraderPlatform.Abstracts.Models.Tests;
 
-[TestClass]
+[TestClass()]
 public class AllocationTests
 {
   private readonly Asset quoteCurrency = new("EUR");
@@ -30,7 +30,7 @@ public class AllocationTests
     internal bool AmountQuoteUpdateEventTriggered() => amountQuoteUpdate && !(amountQuoteUpdate = false);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void Initialize()
   {
     decimal price = 15;
@@ -43,7 +43,7 @@ public class AllocationTests
     Assert.AreEqual(amount * price, alloc.AmountQuote);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void UpdatePrice()
   {
     decimal price = 15;
@@ -62,7 +62,7 @@ public class AllocationTests
     Assert.AreEqual(amount * price, alloc.AmountQuote);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void IncreaseAmount()
   {
     decimal price = 15;
@@ -86,7 +86,7 @@ public class AllocationTests
     Assert.AreEqual(amount * price, alloc.AmountQuote);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void DecreaseAmount()
   {
     decimal price = 15;
@@ -110,7 +110,7 @@ public class AllocationTests
     Assert.AreEqual(amount * price, alloc.AmountQuote);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void IncreaseAmountQuote()
   {
     decimal price = 15;
@@ -136,7 +136,7 @@ public class AllocationTests
     Assert.AreEqual(amountQuote, alloc.AmountQuote);
   }
 
-  [TestMethod]
+  [TestMethod()]
   public void DecreaseAmountQuote()
   {
     decimal price = 15;
