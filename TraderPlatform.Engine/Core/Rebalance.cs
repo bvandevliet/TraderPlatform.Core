@@ -243,7 +243,7 @@ public static partial class Trader
     return await Task.WhenAll(buyTasks);
   }
 
-  public static IEnumerable<IOrder> EstimateFee(this IExchangeService @this, Balance newBalance, Balance curBalance)
+  public static IEnumerable<IOrder> SimulateRebalance(this IExchangeService @this, Balance newBalance, Balance curBalance)
   {
     // Get enumerable since we're iterating it just once.
     IEnumerable<KeyValuePair<Allocation, decimal>> quoteDiffs = GetAllocationQuoteDiffs(newBalance, curBalance);
