@@ -1,7 +1,4 @@
-using TraderPlatform.Abstracts.Interfaces;
-using TraderPlatform.Abstracts.Models;
-
-namespace TraderPlatform.Abstracts.UnitTests.Models;
+namespace TraderPlatform.Abstracts.Models.Tests;
 
 [TestClass]
 public class AllocationTests
