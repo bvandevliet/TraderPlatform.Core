@@ -85,35 +85,67 @@ public static partial class Trader
     return order;
   }
 
-  public static IOrder ConstructSellOrder(this IExchangeService @this, KeyValuePair<Allocation, decimal> quoteDiff)
+  /// <summary>
+  /// Get a buy order object including the expected fee.
+  /// </summary>
+  /// <param name="this"></param>
+  /// <param name="curAlloc"></param>
+  /// <param name="amountQuote"></param>
+  /// <returns></returns>
+  public static IOrder ConstructBuyOrder(this IExchangeService @this, Allocation curAlloc, decimal amountQuote)
+  {
+    // Expected fee.
+    decimal feeExpected =
+      @this.TakerFee * amountQuote;
+
+    return new Order(
+      curAlloc.Market,
+      Abstracts.Enums.OrderSide.Buy,
+      Abstracts.Enums.OrderType.Market,
+      new OrderArgs
+      {
+        AmountQuote = amountQuote,
+      })
+    {
+      FeeExpected = feeExpected,
+    };
+  }
+
+  /// <summary>
+  /// Get a sell order object including the expected fee.
+  /// </summary>
+  /// <param name="this"></param>
+  /// <param name="curAlloc"></param>
+  /// <param name="amountQuote"></param>
+  /// <returns></returns>
+  public static IOrder ConstructSellOrder(this IExchangeService @this, Allocation curAlloc, decimal amountQuote)
   {
     bool terminatePosition =
-      quoteDiff.Key.AmountQuote - quoteDiff.Value <= @this.MinimumOrderSize;
+      curAlloc.AmountQuote - amountQuote <= @this.MinimumOrderSize;
 
     // Prevent dust.
     OrderArgs orderArgs = !terminatePosition
       ? new()
       {
-        AmountQuote = quoteDiff.Value,
+        AmountQuote = amountQuote,
       }
       : new()
       {
-        Amount = quoteDiff.Key.Amount,
+        Amount = curAlloc.Amount,
       };
 
     // Expected fee.
     decimal feeExpected = !terminatePosition
-      ? @this.TakerFee * quoteDiff.Value
-      : @this.TakerFee * quoteDiff.Key.AmountQuote;
+      ? @this.TakerFee * amountQuote
+      : @this.TakerFee * curAlloc.AmountQuote;
 
-    // Sell order ..
     return new Order(
-      quoteDiff.Key.Market,
+      curAlloc.Market,
       Abstracts.Enums.OrderSide.Sell,
       Abstracts.Enums.OrderType.Market,
       orderArgs)
     {
-      FeeExpected = feeExpected
+      FeeExpected = feeExpected,
     };
   }
 
@@ -147,24 +179,8 @@ public static partial class Trader
       // Positive quote differences refer to oversized allocations.
       if (quoteDiff.Value >= @this.MinimumOrderSize)
       {
-        // Prevent dust.
-        OrderArgs orderArgs =
-          quoteDiff.Key.AmountQuote - quoteDiff.Value > @this.MinimumOrderSize
-          ? new()
-          {
-            AmountQuote = quoteDiff.Value,
-          }
-          : new()
-          {
-            Amount = quoteDiff.Key.Amount,
-          };
-
         // Sell ..
-        sellTasks.Add(@this.NewOrder(
-          quoteDiff.Key.Market,
-          Abstracts.Enums.OrderSide.Sell,
-          Abstracts.Enums.OrderType.Market,
-          orderArgs)
+        sellTasks.Add(@this.NewOrder(@this.ConstructSellOrder(quoteDiff.Key, quoteDiff.Value))
           // Continue to verify sell order ended, within same task to optimize performance.
           .ContinueWith(sellTask => @this.VerifyOrderEnded(sellTask.Result)).Unwrap());
       }
@@ -220,14 +236,7 @@ public static partial class Trader
       if (amountQuote <= -@this.MinimumOrderSize)
       {
         // Buy ..
-        buyTasks.Add(@this.NewOrder(
-          quoteDiff.Key.Market,
-          Abstracts.Enums.OrderSide.Buy,
-          Abstracts.Enums.OrderType.Market,
-          new OrderArgs
-          {
-            AmountQuote = amountQuote,
-          }));
+        buyTasks.Add(@this.NewOrder(@this.ConstructBuyOrder(quoteDiff.Key, amountQuote)));
       }
     }
 
@@ -252,24 +261,15 @@ public static partial class Trader
       // Positive quote differences refer to oversized allocations.
       if (quoteDiff.Value >= @this.MinimumOrderSize)
       {
-        // Sell order ..
-        yield return @this.ConstructSellOrder(quoteDiff);
+        // Sell ..
+        yield return @this.ConstructSellOrder(quoteDiff.Key, quoteDiff.Value);
       }
+
       // Negative quote differences refer to undersized allocations.
       else if (quoteDiff.Value <= -@this.MinimumOrderSize)
       {
-        // Buy order ..
-        yield return new Order(
-          quoteDiff.Key.Market,
-          Abstracts.Enums.OrderSide.Sell,
-          Abstracts.Enums.OrderType.Market,
-          new OrderArgs
-          {
-            AmountQuote = quoteDiff.Value,
-          })
-        {
-          FeeExpected = quoteDiff.Value * @this.TakerFee,
-        };
+        // Buy ..
+        yield return @this.ConstructBuyOrder(quoteDiff.Key, Math.Abs(quoteDiff.Value));
       }
     }
   }
