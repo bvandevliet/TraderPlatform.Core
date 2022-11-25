@@ -89,10 +89,12 @@ public class Balance
     allocation.OnPriceUpdate += ResetAmountQuoteTotal;
 
     allocation.OnAmountUpdate += ResetAmountQuoteTotal;
+    allocation.OnAmountQuoteUpdate += ResetAmountQuoteTotal;
 
     if (allocation.Market.BaseCurrency.Equals(QuoteCurrency))
     {
       allocation.OnAmountUpdate += ResetAmountQuoteAvailable;
+      allocation.OnAmountQuoteUpdate += ResetAmountQuoteAvailable;
     }
 
     allocations.Add(allocation);
@@ -120,7 +122,10 @@ public class Balance
       allocation.OnPriceUpdate -= ResetAmountQuoteTotal;
 
       allocation.OnAmountUpdate -= ResetAmountQuoteTotal;
+      allocation.OnAmountQuoteUpdate -= ResetAmountQuoteTotal;
+
       allocation.OnAmountUpdate -= ResetAmountQuoteAvailable;
+      allocation.OnAmountQuoteUpdate -= ResetAmountQuoteAvailable;
 
       allocations.Remove(allocation);
 

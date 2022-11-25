@@ -136,6 +136,32 @@ public class BalanceTests
   }
 
   [TestMethod]
+  public void UpdateAllocation_AmountQuote()
+  {
+    var balance = new BalanceWrapper(quoteCurrency);
+
+    var alloc = new Allocation(new Market(quoteCurrency, new Asset("BTC")), 5, 5);
+
+    balance.AddAllocation(alloc);
+
+    // Test amount quote value.
+    Assert.AreEqual(5 * 5, balance.AmountQuoteTotal);
+
+    // Reset event states.
+    balance.AmountQuoteTotalResetEventTriggered();
+    balance.AmountQuoteAvailableResetEventTriggered();
+
+    alloc.AmountQuote = 20; // was 5 * 5;
+
+    // Test if events are raised as expected.
+    Assert.IsTrue(balance.AmountQuoteTotalResetEventTriggered());
+    Assert.IsFalse(balance.AmountQuoteAvailableResetEventTriggered());
+
+    // Test amount quote value.
+    Assert.AreEqual(20, balance.AmountQuoteTotal);
+  }
+
+  [TestMethod]
   public void AddAllocation_SameReferenceMultipleTimes()
   {
     var balance = new BalanceWrapper(quoteCurrency);
