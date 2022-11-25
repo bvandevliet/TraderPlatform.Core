@@ -29,6 +29,8 @@ public interface IExchangeService
 
   Task<ITickerPrice> GetPrice(IMarket market);
 
+  Task<IOrder> NewOrder(IOrder order);
+
   Task<IOrder> NewOrder(IMarket market, OrderSide side, OrderType type, IOrderArgs orderArgs);
 
   Task<IOrder?> GetOrder(string orderId, IMarket? market = null);
