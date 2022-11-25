@@ -190,7 +190,7 @@ public static partial class Trader
   /// <summary>
   /// Buy to increase undersized <see cref="Allocation"/>s in order for those to meet <paramref name="newAssetAllocs"/>.
   /// <see cref="Allocation"/> differences are scaled relative to available quote currency.
-  /// Completes when orders are placed.
+  /// Completes when all triggered buy orders are posted.
   /// </summary>
   /// <param name="this"></param>
   /// <param name="newAssetAllocs"></param>
@@ -201,7 +201,7 @@ public static partial class Trader
     Balance curBalance = await @this.GetBalance();
 
     // Load in memory using .ToList(), to avoid re-enumerating since we're iterating it more than once.
-    // IS THIS REALLY THE PREFERED WAY ? !!
+    // IS THIS REALLY THE PREFERRED WAY ? !!
     var quoteDiffs = GetAllocationQuoteDiffs(newAssetAllocs, curBalance).ToList();
 
     // Absolute sum of all negative quote differences except of quote currency.
