@@ -74,11 +74,11 @@ public class Allocation : ITickerPrice, IPosition
   /// <param name="amount"><inheritdoc cref="Amount"/></param>
   public Allocation(
     IMarket market,
-    decimal price,
+    decimal? price = null,
     decimal? amount = null)
   {
     Market = market;
-    this.price = price;
+    this.price = price ?? 0;
     this.amount = amount ?? 0;
   }
 

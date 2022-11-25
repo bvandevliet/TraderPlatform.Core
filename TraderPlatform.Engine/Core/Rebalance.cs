@@ -1,52 +1,50 @@
 using TraderPlatform.Abstracts.Interfaces;
 using TraderPlatform.Abstracts.Models;
 using TraderPlatform.Abstracts.Services;
+using TraderPlatform.Engine.Models;
 
 namespace TraderPlatform.Engine.Core;
 
 public static partial class Trader
 {
   /// <summary>
-  /// Get difference in quote currency between <paramref name="newAlloc"/> and <paramref name="curAlloc"/>.
+  /// Get current deviation in quote currency when comparing absolute new allocations in
+  /// <paramref name="newAssetAllocs"/> against current allocations in <paramref name="curBalance"/>.
   /// </summary>
-  /// <param name="newAlloc"></param>
-  /// <param name="curAlloc"></param>
-  /// <returns><paramref name="curAlloc"/> and its difference in quote currency compared to given <paramref name="newAlloc"/>.</returns>
-  public static KeyValuePair<Allocation, decimal> GetAllocationQuoteDiff(Allocation newAlloc, Allocation curAlloc)
-  {
-    return new KeyValuePair<Allocation, decimal>(curAlloc, curAlloc.AmountQuote - newAlloc.AmountQuote);
-  }
-
-  /// <summary>
-  /// Get difference in quote currency between each new and current <see cref="Allocation"/> in respectively <paramref name="newBalance"/> and <paramref name="curBalance"/>.
-  /// </summary>
-  /// <param name="newBalance"></param>
+  /// <param name="newAssetAllocs"></param>
   /// <param name="curBalance"></param>
-  /// <returns>Collection of current <see cref="Allocation"/>s and their differences in quote currency compared to the new <see cref="Allocation"/>s.</returns>
-  public static IEnumerable<KeyValuePair<Allocation, decimal>> GetAllocationQuoteDiffs(Balance newBalance, Balance curBalance)
+  /// <returns>Collection of current <see cref="Allocation"/>s and their deviation in quote currency.</returns>
+  public static IEnumerable<KeyValuePair<Allocation, decimal>> GetAllocationQuoteDiffs(IEnumerable<AbsAssetAlloc> newAssetAllocs, Balance curBalance)
   {
+    decimal totalAbsAlloc = newAssetAllocs.Sum(absAssetAlloc => absAssetAlloc.AbsAlloc);
+
     foreach (Allocation curAlloc in curBalance.Allocations)
     {
-      Allocation newAlloc = newBalance.GetAllocation(curAlloc.Market.BaseCurrency) ?? new(curAlloc.Market, curAlloc.Price, 0);
+      decimal absAlloc =
+        newAssetAllocs.FirstOrDefault(absAssetAlloc => absAssetAlloc.Asset.Equals(curAlloc.Market.BaseCurrency))?.AbsAlloc ?? 0;
 
-      yield return GetAllocationQuoteDiff(newAlloc, curAlloc);
+      decimal ratio = totalAbsAlloc == 0 ? 0 : absAlloc / totalAbsAlloc;
+
+      decimal newAmountQuote = ratio * curBalance.AmountQuoteTotal;
+
+      yield return new KeyValuePair<Allocation, decimal>(curAlloc, curAlloc.AmountQuote - newAmountQuote);
     }
 
-    foreach (Allocation newAlloc in newBalance.Allocations)
+    foreach (AbsAssetAlloc absAssetAlloc in newAssetAllocs)
     {
-      Allocation? curAlloc = curBalance.GetAllocation(newAlloc.Market.BaseCurrency);
-
-      if (curAlloc != null)
+      if (null != curBalance.GetAllocation(absAssetAlloc.Asset))
       {
         // Already covered in previous foreach.
         continue;
       }
-      else
-      {
-        curAlloc = new(newAlloc.Market, newAlloc.Price, 0);
-      }
 
-      yield return GetAllocationQuoteDiff(curAlloc, newAlloc);
+      Allocation curAlloc = new(new Market(curBalance.QuoteCurrency, absAssetAlloc.Asset), 0, 0);
+
+      decimal ratio = totalAbsAlloc == 0 ? 0 : absAssetAlloc.AbsAlloc / totalAbsAlloc;
+
+      decimal newAmountQuote = ratio * curBalance.AmountQuoteTotal;
+
+      yield return new KeyValuePair<Allocation, decimal>(curAlloc, -newAmountQuote);
     }
   }
 
@@ -157,7 +155,7 @@ public static partial class Trader
   /// <param name="newBalance"></param>
   /// <param name="curBalance"></param>
   /// <returns></returns>
-  public static async Task<IOrder[]> SellOveragesAndVerify(this IExchangeService @this, Balance newBalance, Balance? curBalance = null)
+  public static async Task<IOrder[]> SellOveragesAndVerify(this IExchangeService @this, IEnumerable<AbsAssetAlloc> newBalance, Balance? curBalance = null)
   {
     // Fetch balance if not provided.
     curBalance ??= await @this.GetBalance();
@@ -197,7 +195,7 @@ public static partial class Trader
   /// <param name="this"></param>
   /// <param name="newBalance"></param>
   /// <returns></returns>
-  public static async Task<IOrder[]> BuyUnderages(this IExchangeService @this, Balance newBalance)
+  public static async Task<IOrder[]> BuyUnderages(this IExchangeService @this, IEnumerable<AbsAssetAlloc> newBalance)
   {
     // Force fetch current balance.
     Balance curBalance = await @this.GetBalance();
@@ -243,7 +241,7 @@ public static partial class Trader
     return await Task.WhenAll(buyTasks);
   }
 
-  public static IEnumerable<IOrder> SimulateRebalance(this IExchangeService @this, Balance newBalance, Balance curBalance)
+  public static IEnumerable<IOrder> SimulateRebalance(this IExchangeService @this, IEnumerable<AbsAssetAlloc> newBalance, Balance curBalance)
   {
     // Get enumerable since we're iterating it just once.
     IEnumerable<KeyValuePair<Allocation, decimal>> quoteDiffs = GetAllocationQuoteDiffs(newBalance, curBalance);
@@ -279,7 +277,7 @@ public static partial class Trader
   /// </summary>
   /// <param name="this"></param>
   /// <param name="newBalance"></param>
-  public static async Task<IEnumerable<IOrder>> Rebalance(this IExchangeService @this, Balance newBalance)
+  public static async Task<IEnumerable<IOrder>> Rebalance(this IExchangeService @this, IEnumerable<AbsAssetAlloc> newBalance)
   {
     // Clear the path ..
     await @this.CancelAllOpenOrders();
