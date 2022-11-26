@@ -196,10 +196,10 @@ public static partial class Trader
   /// <param name="this"></param>
   /// <param name="newAssetAllocs"></param>
   /// <returns></returns>
-  public static async Task<IOrder[]> BuyUnderages(this IExchangeService @this, IEnumerable<AbsAssetAlloc> newAssetAllocs)
+  public static async Task<IOrder[]> BuyUnderages(this IExchangeService @this, IEnumerable<AbsAssetAlloc> newAssetAllocs, Balance? curBalance = null)
   {
-    // Force fetch current balance.
-    Balance curBalance = await @this.GetBalance();
+    // Fetch balance if not provided.
+    curBalance ??= await @this.GetBalance();
 
     // Initialize quote diff List,
     // being filled using a multi-purpose foreach to eliminate redundant interations.
