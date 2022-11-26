@@ -245,7 +245,7 @@ public static partial class Trader
       if (amountQuote <= -@this.MinimumOrderSize)
       {
         // Buy ..
-        buyTasks.Add(@this.NewOrder(@this.ConstructBuyOrder(quoteDiff.Key, amountQuote)));
+        buyTasks.Add(@this.NewOrder(@this.ConstructBuyOrder(quoteDiff.Key, Math.Abs(amountQuote))));
       }
     }
 
@@ -285,8 +285,12 @@ public static partial class Trader
         // We can't sell quote currency for quote currency.
         if (!quoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency))
         {
+          IOrder sellOrder = @this.ConstructSellOrder(quoteDiff.Key, quoteDiff.Value);
+
+          sellOrder.Status = Abstracts.Enums.OrderStatus.Filled;
+
           // Sell ..
-          yield return @this.ConstructSellOrder(quoteDiff.Key, quoteDiff.Value);
+          yield return sellOrder;
         }
       }
 
@@ -320,8 +324,12 @@ public static partial class Trader
       // and check if reached minimum order size.
       if (amountQuote <= -@this.MinimumOrderSize)
       {
+        IOrder buyOrder = @this.ConstructBuyOrder(quoteDiff.Key, Math.Abs(quoteDiff.Value));
+
+        buyOrder.Status = Abstracts.Enums.OrderStatus.Filled;
+
         // Buy ..
-        yield return @this.ConstructBuyOrder(quoteDiff.Key, Math.Abs(quoteDiff.Value));
+        yield return buyOrder;
       }
     }
   }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TraderPlatform.Abstracts.Enums;
 using TraderPlatform.Abstracts.Interfaces;
 using TraderPlatform.Abstracts.Models;
