@@ -251,7 +251,13 @@ public static partial class Trader
     // Get enumerable since we're iterating it just once.
     IEnumerable<KeyValuePair<Allocation, decimal>> quoteDiffs = GetAllocationQuoteDiffs(newAssetAllocs, curBalance);
 
-    // The order loop ..
+    decimal quoteAvailable = curBalance.AmountQuoteAvailable;
+
+    decimal totalBuy = 0;
+
+    List<KeyValuePair<Allocation, decimal>> buyDiffs = new();
+
+    // The sell order, and buy order prep, loop ..
     foreach (KeyValuePair<Allocation, decimal> quoteDiff in quoteDiffs)
     {
       if (quoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency))
@@ -264,12 +270,34 @@ public static partial class Trader
       // Positive quote differences refer to oversized allocations.
       if (quoteDiff.Value >= @this.MinimumOrderSize)
       {
+        quoteAvailable += quoteDiff.Value;
+
         // Sell ..
         yield return @this.ConstructSellOrder(quoteDiff.Key, quoteDiff.Value);
       }
 
       // Negative quote differences refer to undersized allocations.
-      else if (quoteDiff.Value <= -@this.MinimumOrderSize)
+      else if (quoteDiff.Value <= 0)
+      {
+        buyDiffs.Add(quoteDiff);
+
+        totalBuy -= quoteDiff.Value;
+      }
+    }
+
+    // Multiplication ratio to avoid potentially oversized buy order sizes.
+    decimal ratio = Math.Min(totalBuy, quoteAvailable) / totalBuy;
+
+    // The buy order loop ..
+    foreach (KeyValuePair<Allocation, decimal> quoteDiff in buyDiffs)
+    {
+      // Scale to avoid potentially oversized buy order sizes.
+      // First check eligibility as it is less expensive operation than the multiplication operation.
+      decimal amountQuote =
+        quoteDiff.Value <= -@this.MinimumOrderSize ? ratio * quoteDiff.Value : 0;
+
+      // Negative quote differences refer to undersized allocations.
+      if (amountQuote <= -@this.MinimumOrderSize)
       {
         // Buy ..
         yield return @this.ConstructBuyOrder(quoteDiff.Key, Math.Abs(quoteDiff.Value));
