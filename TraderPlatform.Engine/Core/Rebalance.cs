@@ -204,11 +204,9 @@ public static partial class Trader
     // IS THIS REALLY THE PREFERRED WAY ? !!
     var quoteDiffs = GetAllocationQuoteDiffs(newAssetAllocs, curBalance).ToList();
 
-    // Absolute sum of all negative quote differences except of quote currency.
+    // Absolute sum of all negative quote differences.
     decimal totalBuy = Math.Abs(quoteDiffs
-      .FindAll(quoteDiff =>
-        !quoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency)
-        && quoteDiff.Value < 0)
+      .FindAll(quoteDiff => quoteDiff.Value < 0)
       .Sum(quoteDiff => quoteDiff.Value));
 
     // Multiplication ratio to avoid potentially oversized buy order sizes.
