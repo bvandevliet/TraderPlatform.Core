@@ -16,21 +16,42 @@ public static partial class Trader
   /// <returns>Collection of current <see cref="Allocation"/>s and their deviation in quote currency.</returns>
   public static IEnumerable<KeyValuePair<Allocation, decimal>> GetAllocationQuoteDiffs(IEnumerable<AbsAssetAlloc> newAssetAllocs, Balance curBalance)
   {
-    decimal totalAbsAlloc = newAssetAllocs.Sum(absAssetAlloc => absAssetAlloc.AbsAlloc);
+    // Initialize absolute asset allocation List,
+    // being filled using a multi-purpose foreach to eliminate redundant interations.
+    List<AbsAssetAlloc> newAssetAllocsList = new();
 
+    // Sum of all absolute allocation values.
+    // being summed up using a multi-purpose foreach to eliminate redundant interations.
+    decimal totalAbsAlloc = 0;
+
+    // Multi-purpose foreach to eliminate redundant interations.
+    foreach (AbsAssetAlloc absAssetAlloc in newAssetAllocs)
+    {
+      // Add to sum of all absolute allocation values.
+      totalAbsAlloc += absAssetAlloc.AbsAlloc;
+
+      // Add to absolute asset allocation List.
+      newAssetAllocsList.Add(absAssetAlloc);
+    }
+
+    // Loop through current allocations and determine quote diffs.
     foreach (Allocation curAlloc in curBalance.Allocations)
     {
+      // Find associated absolute allocation.
       decimal absAlloc =
-        newAssetAllocs.FirstOrDefault(absAssetAlloc => absAssetAlloc.Asset.Equals(curAlloc.Market.BaseCurrency))?.AbsAlloc ?? 0;
+        newAssetAllocsList.Find(absAssetAlloc => absAssetAlloc.Asset.Equals(curAlloc.Market.BaseCurrency))?.AbsAlloc ?? 0;
 
-      decimal ratio = totalAbsAlloc == 0 ? 0 : absAlloc / totalAbsAlloc;
+      // Determine relative allocation.
+      decimal relAlloc = totalAbsAlloc == 0 ? 0 : absAlloc / totalAbsAlloc;
 
-      decimal newAmountQuote = ratio * curBalance.AmountQuoteTotal;
+      // Determine new quote amount.
+      decimal newAmountQuote = relAlloc * curBalance.AmountQuoteTotal;
 
       yield return new KeyValuePair<Allocation, decimal>(curAlloc, curAlloc.AmountQuote - newAmountQuote);
     }
 
-    foreach (AbsAssetAlloc absAssetAlloc in newAssetAllocs)
+    // Loop through absolute asset allocations and determine yet missing quote diffs.
+    foreach (AbsAssetAlloc absAssetAlloc in newAssetAllocsList)
     {
       if (null != curBalance.GetAllocation(absAssetAlloc.Asset))
       {
@@ -38,11 +59,14 @@ public static partial class Trader
         continue;
       }
 
+      // Define current allocation, which is zero here.
       Allocation curAlloc = new(new Market(curBalance.QuoteCurrency, absAssetAlloc.Asset), 0, 0);
 
-      decimal ratio = totalAbsAlloc == 0 ? 0 : absAssetAlloc.AbsAlloc / totalAbsAlloc;
+      // Determine relative allocation.
+      decimal relAlloc = totalAbsAlloc == 0 ? 0 : absAssetAlloc.AbsAlloc / totalAbsAlloc;
 
-      decimal newAmountQuote = ratio * curBalance.AmountQuoteTotal;
+      // Determine new quote amount.
+      decimal newAmountQuote = relAlloc * curBalance.AmountQuoteTotal;
 
       yield return new KeyValuePair<Allocation, decimal>(curAlloc, -newAmountQuote);
     }
