@@ -148,21 +148,14 @@ public static partial class Trader
   }
 
   /// <summary>
-  /// Sell pieces of oversized <see cref="Allocation"/>s in order for those to meet <paramref name="newAssetAllocs"/>.
+  /// Sell pieces of oversized <see cref="Allocation"/>s as defined in <paramref name="quoteDiffs"/>.
   /// Completes when verified that all triggered sell orders are ended.
   /// </summary>
   /// <param name="this"></param>
-  /// <param name="newAssetAllocs"></param>
-  /// <param name="curBalance"></param>
+  /// <param name="quoteDiffs"></param>
   /// <returns></returns>
-  public static async Task<IOrder[]> SellOveragesAndVerify(this IExchangeService @this, IEnumerable<AbsAssetAlloc> newAssetAllocs, Balance? curBalance = null)
+  public static async Task<IOrder[]> SellOveragesAndVerify(this IExchangeService @this, IEnumerable<KeyValuePair<Allocation, decimal>> quoteDiffs)
   {
-    // Fetch balance if not provided.
-    curBalance ??= await @this.GetBalance();
-
-    // Get enumerable since we're iterating it just once.
-    IEnumerable<KeyValuePair<Allocation, decimal>> quoteDiffs = GetAllocationQuoteDiffs(newAssetAllocs, curBalance);
-
     var sellTasks = new List<Task<IOrder>>();
 
     // The sell task loop ..
@@ -186,6 +179,25 @@ public static partial class Trader
     }
 
     return await Task.WhenAll(sellTasks);
+  }
+
+  /// <summary>
+  /// Sell pieces of oversized <see cref="Allocation"/>s in order for those to meet <paramref name="newAssetAllocs"/>.
+  /// Completes when verified that all triggered sell orders are ended.
+  /// </summary>
+  /// <param name="this"></param>
+  /// <param name="newAssetAllocs"></param>
+  /// <param name="curBalance"></param>
+  /// <returns></returns>
+  public static async Task<IOrder[]> SellOveragesAndVerify(this IExchangeService @this, IEnumerable<AbsAssetAlloc> newAssetAllocs, Balance? curBalance = null)
+  {
+    // Fetch balance if not provided.
+    curBalance ??= await @this.GetBalance();
+
+    // Get enumerable since we're iterating it just once.
+    IEnumerable<KeyValuePair<Allocation, decimal>> quoteDiffs = GetAllocationQuoteDiffs(newAssetAllocs, curBalance);
+
+    return await @this.SellOveragesAndVerify(quoteDiffs);
   }
 
   /// <summary>
@@ -339,14 +351,19 @@ public static partial class Trader
   /// </summary>
   /// <param name="this"></param>
   /// <param name="newAssetAllocs"></param>
-  public static async Task<IEnumerable<IOrder>> Rebalance(this IExchangeService @this, IEnumerable<AbsAssetAlloc> newAssetAllocs)
+  public static async Task<IEnumerable<IOrder>> Rebalance(
+    this IExchangeService @this,
+    IEnumerable<AbsAssetAlloc> newAssetAllocs,
+    IEnumerable<KeyValuePair<Allocation, decimal>>? quoteDiffs = null)
   {
     // Clear the path ..
     await @this.CancelAllOpenOrders();
 
     // Sell pieces of oversized allocations first,
     // so we have sufficient quote currency available to buy with.
-    IOrder[] sellResults = await @this.SellOveragesAndVerify(newAssetAllocs);
+    IOrder[] sellResults = null != quoteDiffs
+      ? await @this.SellOveragesAndVerify(quoteDiffs)
+      : await @this.SellOveragesAndVerify(newAssetAllocs);
 
     // Then buy to increase undersized allocations.
     IOrder[] buyResults = await @this.BuyUnderages(newAssetAllocs);

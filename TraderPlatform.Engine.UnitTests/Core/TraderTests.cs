@@ -40,7 +40,7 @@ public class TraderTests
 
     // Sell pieces of oversized allocations first,
     // so we have sufficient quote currency available to buy with.
-    IOrder[] sellResults = await exchangeService.SellOveragesAndVerify(absAssetAlloc, curBalance);
+    IOrder[] sellResults = await exchangeService.SellOveragesAndVerify(quoteDiffs);
 
     // Then update balance the dirty way.
     curBalance.GetAllocation(quoteCurrency)!.AmountQuote += (40 + 15 + 225);
