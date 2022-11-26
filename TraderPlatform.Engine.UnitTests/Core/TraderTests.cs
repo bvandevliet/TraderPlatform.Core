@@ -1,5 +1,6 @@
 using TraderPlatform.Abstracts.Models;
 using TraderPlatform.Engine.Models;
+using TraderPlatform.Engine.UnitTests.Services;
 
 namespace TraderPlatform.Engine.Core.Tests;
 
@@ -7,18 +8,13 @@ namespace TraderPlatform.Engine.Core.Tests;
 public class TraderTests
 {
   [TestMethod()]
-  public void GetAllocationQuoteDiffsTest()
+  public async Task GetAllocationQuoteDiffsTest()
   {
     Asset quoteCurrency = new("EUR");
 
-    decimal deposit = 1000;
+    ExchangeService exchangeService = new(quoteCurrency, 5, .0015m, .0025m);
 
-    Balance curBalance = new(quoteCurrency);
-    curBalance.AddAllocation(new(new Market(quoteCurrency, new Asset("EUR")), 000001, .05m * deposit));
-    curBalance.AddAllocation(new(new Market(quoteCurrency, new Asset("BTC")), 18_000, .40m * deposit / 15_000));
-    curBalance.AddAllocation(new(new Market(quoteCurrency, new Asset("ETH")), 01_610, .30m * deposit / 01_400));
-    curBalance.AddAllocation(new(new Market(quoteCurrency, new Asset("BNB")), 000306, .25m * deposit / 000340));
-    //                                                                                100%
+    Balance curBalance = await exchangeService.GetBalance();
 
     List<AbsAssetAlloc> absAssetAlloc = new()
     {
