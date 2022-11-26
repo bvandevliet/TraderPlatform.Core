@@ -210,7 +210,7 @@ public static partial class Trader
       .Sum(quoteDiff => quoteDiff.Value));
 
     // Multiplication ratio to avoid potentially oversized buy order sizes.
-    decimal ratio = Math.Min(totalBuy, curBalance.AmountQuoteAvailable) / totalBuy;
+    decimal ratio = Math.Min(totalBuy, curBalance.AmountQuote) / totalBuy;
 
     var buyTasks = new List<Task<IOrder>>();
 
@@ -251,7 +251,7 @@ public static partial class Trader
     // Get enumerable since we're iterating it just once.
     IEnumerable<KeyValuePair<Allocation, decimal>> quoteDiffs = GetAllocationQuoteDiffs(newAssetAllocs, curBalance);
 
-    decimal quoteAvailable = curBalance.AmountQuoteAvailable;
+    decimal quoteAvailable = curBalance.AmountQuote;
 
     decimal totalBuy = 0;
 

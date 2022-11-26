@@ -15,7 +15,7 @@ public class Balance
   public event EventHandler? OnAmountQuoteTotalReset;
 
   /// <summary>
-  /// Triggered when <see cref="AmountQuoteAvailable"/> has changed.
+  /// Triggered when <see cref="AmountQuote"/> has changed.
   /// </summary>
   public event EventHandler? OnAmountQuoteAvailableReset;
 
@@ -39,13 +39,13 @@ public class Balance
     get => amountQuoteTotal ??= Allocations.Sum(alloc => alloc.AmountQuote);
   }
 
-  private decimal? amountQuoteAvailable;
+  private decimal? amountQuote;
   /// <summary>
-  /// Total freely available amount in quote currency.
+  /// Amount of quote currency.
   /// </summary>
-  public decimal AmountQuoteAvailable
+  public decimal AmountQuote
   {
-    get => amountQuoteAvailable ??= GetAllocation(QuoteCurrency)?.AmountQuote ?? 0;
+    get => amountQuote ??= GetAllocation(QuoteCurrency)?.AmountQuote ?? 0;
   }
 
   /// <summary>
@@ -149,7 +149,7 @@ public class Balance
 
   private void ResetAmountQuoteAvailable(object? sender, NumberUpdateEventArgs? e = null)
   {
-    amountQuoteAvailable = null;
+    amountQuote = null;
 
     OnAmountQuoteAvailableReset?.Invoke(this, new());
   }
