@@ -174,7 +174,8 @@ public static partial class Trader
         continue;
       }
 
-      // Positive quote differences refer to oversized allocations.
+      // Positive quote differences refer to oversized allocations,
+      // and check if reached minimum order size.
       if (quoteDiff.Value >= @this.MinimumOrderSize)
       {
         // Sell ..
@@ -200,14 +201,31 @@ public static partial class Trader
     // Force fetch current balance.
     Balance curBalance = await @this.GetBalance();
 
-    // Load in memory using .ToList(), to avoid re-enumerating since we're iterating it more than once.
-    // IS THIS REALLY THE PREFERRED WAY ? !!
-    var quoteDiffs = GetAllocationQuoteDiffs(newAssetAllocs, curBalance).ToList();
+    // Initialize quote diff List,
+    // being filled using a multi-purpose foreach to eliminate redundant interations.
+    List<KeyValuePair<Allocation, decimal>> quoteDiffs = new();
 
-    // Absolute sum of all negative quote differences.
-    decimal totalBuy = Math.Abs(quoteDiffs
-      .FindAll(quoteDiff => quoteDiff.Value < 0)
-      .Sum(quoteDiff => quoteDiff.Value));
+    // Absolute sum of all negative quote differences,
+    // being summed up using a multi-purpose foreach to eliminate redundant interations.
+    decimal totalBuy = 0;
+
+    // Multi-purpose foreach to eliminate redundant interations.
+    foreach (KeyValuePair<Allocation, decimal> quoteDiff in GetAllocationQuoteDiffs(newAssetAllocs, curBalance))
+    {
+      // Negative quote differences refer to undersized allocations.
+      if (quoteDiff.Value < 0)
+      {
+        // Add to absolute sum of all negative quote differences.
+        totalBuy -= quoteDiff.Value;
+
+        // We can't buy quote currency with quote currency.
+        if (!quoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency))
+        {
+          // Add to quote diff List.
+          quoteDiffs.Add(quoteDiff);
+        }
+      }
+    }
 
     // Multiplication ratio to avoid potentially oversized buy order sizes.
     decimal ratio = Math.Min(totalBuy, curBalance.AmountQuote) / totalBuy;
@@ -217,18 +235,13 @@ public static partial class Trader
     // The buy task loop ..
     foreach (KeyValuePair<Allocation, decimal> quoteDiff in quoteDiffs)
     {
-      if (quoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency))
-      {
-        // We can't buy quote currency with quote currency.
-        continue;
-      }
-
       // Scale to avoid potentially oversized buy order sizes.
       // First check eligibility as it is less expensive operation than the multiplication operation.
       decimal amountQuote =
         quoteDiff.Value <= -@this.MinimumOrderSize ? ratio * quoteDiff.Value : 0;
 
-      // Negative quote differences refer to undersized allocations.
+      // Negative quote differences refer to undersized allocations,
+      // and check if reached minimum order size.
       if (amountQuote <= -@this.MinimumOrderSize)
       {
         // Buy ..
@@ -251,11 +264,13 @@ public static partial class Trader
     // Get enumerable since we're iterating it just once.
     IEnumerable<KeyValuePair<Allocation, decimal>> quoteDiffs = GetAllocationQuoteDiffs(newAssetAllocs, curBalance);
 
+    // Initial amount of quote currency available.
     decimal quoteAvailable = curBalance.AmountQuote;
 
+    // Absolute sum of all negative quote differences.
     decimal totalBuy = 0;
 
-    List<KeyValuePair<Allocation, decimal>> buyDiffs = new();
+    List<KeyValuePair<Allocation, decimal>> negativeDiffs = new();
 
     // The sell order, and buy order prep, loop ..
     foreach (KeyValuePair<Allocation, decimal> quoteDiff in quoteDiffs)
@@ -267,7 +282,8 @@ public static partial class Trader
         continue;
       }
 
-      // Positive quote differences refer to oversized allocations.
+      // Positive quote differences refer to oversized allocations,
+      // and check if reached minimum order size.
       if (quoteDiff.Value >= @this.MinimumOrderSize)
       {
         quoteAvailable += quoteDiff.Value;
@@ -279,8 +295,9 @@ public static partial class Trader
       // Negative quote differences refer to undersized allocations.
       else if (quoteDiff.Value <= 0)
       {
-        buyDiffs.Add(quoteDiff);
+        negativeDiffs.Add(quoteDiff);
 
+        // Add to absolute sum of all negative quote differences.
         totalBuy -= quoteDiff.Value;
       }
     }
@@ -288,15 +305,16 @@ public static partial class Trader
     // Multiplication ratio to avoid potentially oversized buy order sizes.
     decimal ratio = Math.Min(totalBuy, quoteAvailable) / totalBuy;
 
-    // The buy order loop ..
-    foreach (KeyValuePair<Allocation, decimal> quoteDiff in buyDiffs)
+    // The buy order loop, diffs are already filtered ..
+    foreach (KeyValuePair<Allocation, decimal> quoteDiff in negativeDiffs)
     {
       // Scale to avoid potentially oversized buy order sizes.
       // First check eligibility as it is less expensive operation than the multiplication operation.
       decimal amountQuote =
         quoteDiff.Value <= -@this.MinimumOrderSize ? ratio * quoteDiff.Value : 0;
 
-      // Negative quote differences refer to undersized allocations.
+      // Negative quote differences refer to undersized allocations,
+      // and check if reached minimum order size.
       if (amountQuote <= -@this.MinimumOrderSize)
       {
         // Buy ..
