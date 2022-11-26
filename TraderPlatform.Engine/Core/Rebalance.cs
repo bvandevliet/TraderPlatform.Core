@@ -232,7 +232,7 @@ public static partial class Trader
 
     var buyTasks = new List<Task<IOrder>>();
 
-    // The buy task loop ..
+    // The buy task loop, diffs are already filtered ..
     foreach (KeyValuePair<Allocation, decimal> quoteDiff in quoteDiffs)
     {
       // Scale to avoid potentially oversized buy order sizes.
