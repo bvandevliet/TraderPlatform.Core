@@ -26,21 +26,21 @@ public class TraderTests
       //                    100%
     };
 
-    var quoteDiffs = Trader.GetAllocationQuoteDiffs(absAssetAlloc, curBalance).ToList();
+    var allocQuoteDiffs = Trader.GetAllocationQuoteDiffs(absAssetAlloc, curBalance).ToList();
 
-    Assert.AreEqual(5, quoteDiffs.Count);
+    Assert.AreEqual(5, allocQuoteDiffs.Count);
 
-    Assert.AreEqual(-005, (double)Math.Round(quoteDiffs[0].Value, 1));
-    Assert.AreEqual(0040, (double)Math.Round(quoteDiffs[1].Value, 1));
-    Assert.AreEqual(0015, (double)Math.Round(quoteDiffs[2].Value, 1));
-    Assert.AreEqual(0225, (double)Math.Round(quoteDiffs[3].Value, 1));
-    Assert.AreEqual(-275, (double)Math.Round(quoteDiffs[4].Value, 1));
+    Assert.AreEqual(-005, (double)Math.Round(allocQuoteDiffs[0].Value, 1));
+    Assert.AreEqual(0040, (double)Math.Round(allocQuoteDiffs[1].Value, 1));
+    Assert.AreEqual(0015, (double)Math.Round(allocQuoteDiffs[2].Value, 1));
+    Assert.AreEqual(0225, (double)Math.Round(allocQuoteDiffs[3].Value, 1));
+    Assert.AreEqual(-275, (double)Math.Round(allocQuoteDiffs[4].Value, 1));
 
     var resultsSimulation = exchangeService.SimulateRebalance(absAssetAlloc, curBalance).ToList();
 
     // Sell pieces of oversized allocations first,
     // so we have sufficient quote currency available to buy with.
-    IOrder[] sellResults = await exchangeService.SellOveragesAndVerify(quoteDiffs);
+    IOrder[] sellResults = await exchangeService.SellOveragesAndVerify(allocQuoteDiffs);
 
     // Then update balance the dirty way.
     curBalance.GetAllocation(quoteCurrency)!.AmountQuote += (40 + 15 + 225);
