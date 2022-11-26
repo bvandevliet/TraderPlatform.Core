@@ -264,8 +264,8 @@ public static partial class Trader
     // Get enumerable since we're iterating it just once.
     IEnumerable<KeyValuePair<Allocation, decimal>> quoteDiffs = GetAllocationQuoteDiffs(newAssetAllocs, curBalance);
 
-    // Initial amount of quote currency available.
-    decimal quoteAvailable = curBalance.AmountQuote;
+    // Amount of quote currency available.
+    decimal quoteAvailable = 0;
 
     // Absolute sum of all negative quote differences.
     decimal totalBuy = 0;
@@ -275,30 +275,33 @@ public static partial class Trader
     // The sell order, and buy order prep, loop ..
     foreach (KeyValuePair<Allocation, decimal> quoteDiff in quoteDiffs)
     {
-      if (quoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency))
-      {
-        // We can't sell quote currency for quote currency
-        // and we can't buy quote currency with quote currency.
-        continue;
-      }
-
       // Positive quote differences refer to oversized allocations,
       // and check if reached minimum order size.
       if (quoteDiff.Value >= @this.MinimumOrderSize)
       {
+        // Add to amount of quote currency available.
         quoteAvailable += quoteDiff.Value;
 
-        // Sell ..
-        yield return @this.ConstructSellOrder(quoteDiff.Key, quoteDiff.Value);
+        // We can't sell quote currency for quote currency.
+        if (!quoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency))
+        {
+          // Sell ..
+          yield return @this.ConstructSellOrder(quoteDiff.Key, quoteDiff.Value);
+        }
       }
 
       // Negative quote differences refer to undersized allocations.
       else if (quoteDiff.Value <= 0)
       {
-        negativeDiffs.Add(quoteDiff);
-
         // Add to absolute sum of all negative quote differences.
         totalBuy -= quoteDiff.Value;
+
+        // We can't buy quote currency with quote currency.
+        if (!quoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency))
+        {
+          // Add to quote diff List.
+          negativeDiffs.Add(quoteDiff);
+        }
       }
     }
 
