@@ -17,14 +17,14 @@ public static partial class Trader
   public static IEnumerable<KeyValuePair<Allocation, decimal>> GetAllocationQuoteDiffs(IEnumerable<AbsAssetAlloc> newAssetAllocs, Balance curBalance)
   {
     // Initialize absolute asset allocation List,
-    // being filled using a multi-purpose foreach to eliminate redundant interations.
+    // being filled using a multi-purpose foreach to eliminate redundant iterations.
     List<AbsAssetAlloc> newAssetAllocsList = new();
 
     // Sum of all absolute allocation values.
-    // being summed up using a multi-purpose foreach to eliminate redundant interations.
+    // being summed up using a multi-purpose foreach to eliminate redundant iterations.
     decimal totalAbsAlloc = 0;
 
-    // Multi-purpose foreach to eliminate redundant interations.
+    // Multi-purpose foreach to eliminate redundant iterations.
     foreach (AbsAssetAlloc absAssetAlloc in newAssetAllocs)
     {
       // Add to sum of all absolute allocation values.
@@ -238,14 +238,14 @@ public static partial class Trader
     curBalance ??= await @this.GetBalance();
 
     // Initialize quote diff List,
-    // being filled using a multi-purpose foreach to eliminate redundant interations.
+    // being filled using a multi-purpose foreach to eliminate redundant iterations.
     List<KeyValuePair<Allocation, decimal>> allocQuoteDiffs = new();
 
     // Absolute sum of all negative quote differences,
-    // being summed up using a multi-purpose foreach to eliminate redundant interations.
+    // being summed up using a multi-purpose foreach to eliminate redundant iterations.
     decimal totalBuy = 0;
 
-    // Multi-purpose foreach to eliminate redundant interations.
+    // Multi-purpose foreach to eliminate redundant iterations.
     foreach (KeyValuePair<Allocation, decimal> allocQuoteDiff in GetAllocationQuoteDiffs(newAssetAllocs, curBalance))
     {
       // Negative quote differences refer to undersized allocations.
