@@ -124,10 +124,7 @@ public static partial class Trader
       curAlloc.Market,
       Abstracts.Enums.OrderSide.Buy,
       Abstracts.Enums.OrderType.Market,
-      new OrderArgs
-      {
-        AmountQuote = amountQuote,
-      })
+      new OrderArgs(amountQuote))
     {
       FeeExpected = feeExpected,
     };
@@ -146,15 +143,10 @@ public static partial class Trader
       curAlloc.AmountQuote - amountQuote <= @this.MinimumOrderSize;
 
     // Prevent dust.
-    OrderArgs orderArgs = !terminatePosition
-      ? new()
-      {
-        AmountQuote = amountQuote,
-      }
-      : new()
-      {
-        Amount = curAlloc.Amount,
-      };
+    OrderArgs orderArgs = new(amountQuote)
+    {
+      Amount = !terminatePosition ? null : curAlloc.Amount,
+    };
 
     // Expected fee.
     decimal feeExpected = !terminatePosition
@@ -286,88 +278,6 @@ public static partial class Trader
     }
 
     return await Task.WhenAll(buyTasks);
-  }
-
-  /// <summary>
-  /// Simulate a portfolio rebalance to estimate fees.
-  /// </summary>
-  /// <param name="this"></param>
-  /// <param name="newAssetAllocs"></param>
-  /// <param name="curBalance"></param>
-  /// <returns></returns>
-  public static IEnumerable<IOrder> SimulateRebalance(this IExchangeService @this, IEnumerable<AbsAssetAlloc> newAssetAllocs, Balance curBalance)
-  {
-    // Get enumerable since we're iterating it just once.
-    IEnumerable<KeyValuePair<Allocation, decimal>> allocQuoteDiffs = GetAllocationQuoteDiffs(newAssetAllocs, curBalance);
-
-    // Amount of quote currency available.
-    decimal quoteAvailable = 0;
-
-    // Absolute sum of all negative quote differences.
-    decimal totalBuy = 0;
-
-    List<KeyValuePair<Allocation, decimal>> negativeDiffs = new();
-
-    // The sell order, and buy order prep, loop ..
-    foreach (KeyValuePair<Allocation, decimal> allocQuoteDiff in allocQuoteDiffs)
-    {
-      // Positive quote differences refer to oversized allocations,
-      // and check if reached minimum order size.
-      if (allocQuoteDiff.Value >= @this.MinimumOrderSize)
-      {
-        // Add to amount of quote currency available.
-        quoteAvailable += allocQuoteDiff.Value;
-
-        // We can't sell quote currency for quote currency.
-        if (!allocQuoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency))
-        {
-          IOrder sellOrder = @this.ConstructSellOrder(allocQuoteDiff.Key, allocQuoteDiff.Value);
-
-          sellOrder.Status = Abstracts.Enums.OrderStatus.Filled;
-
-          // Sell ..
-          yield return sellOrder;
-        }
-      }
-
-      // Negative quote differences refer to undersized allocations.
-      else if (allocQuoteDiff.Value <= 0)
-      {
-        // Add to absolute sum of all negative quote differences.
-        totalBuy -= allocQuoteDiff.Value;
-
-        // We can't buy quote currency with quote currency.
-        if (!allocQuoteDiff.Key.Market.BaseCurrency.Equals(@this.QuoteCurrency))
-        {
-          // Add to quote diff List.
-          negativeDiffs.Add(allocQuoteDiff);
-        }
-      }
-    }
-
-    // Multiplication ratio to avoid potentially oversized buy order sizes.
-    decimal ratio = Math.Min(totalBuy, quoteAvailable) / totalBuy;
-
-    // The buy order loop, diffs are already filtered ..
-    foreach (KeyValuePair<Allocation, decimal> allocQuoteDiff in negativeDiffs)
-    {
-      // Scale to avoid potentially oversized buy order sizes.
-      // First check eligibility as it is less expensive operation than the multiplication operation.
-      decimal amountQuote =
-        allocQuoteDiff.Value <= -@this.MinimumOrderSize ? ratio * allocQuoteDiff.Value : 0;
-
-      // Negative quote differences refer to undersized allocations,
-      // and check if reached minimum order size.
-      if (amountQuote <= -@this.MinimumOrderSize)
-      {
-        IOrder buyOrder = @this.ConstructBuyOrder(allocQuoteDiff.Key, Math.Abs(allocQuoteDiff.Value));
-
-        buyOrder.Status = Abstracts.Enums.OrderStatus.Filled;
-
-        // Buy ..
-        yield return buyOrder;
-      }
-    }
   }
 
   /// <summary>

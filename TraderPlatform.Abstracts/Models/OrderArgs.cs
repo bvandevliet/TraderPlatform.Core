@@ -12,8 +12,17 @@ public class OrderArgs : IOrderArgs
   public decimal? Amount { get; set; } = null;
 
   /// <inheritdoc/>
-  public decimal? AmountQuote { get; set; } = null;
+  public decimal AmountQuote { get; set; }
 
   /// <inheritdoc/>
   public Enums.TimeInForce TimeInForce { get; set; } = Enums.TimeInForce.GTC;
+
+  /// <summary>
+  /// <inheritdoc cref="IOrderArgs"/>
+  /// </summary>
+  /// <param name="amountQuote"></param>
+  public OrderArgs(decimal amountQuote)
+  {
+    AmountQuote = amountQuote;
+  }
 }

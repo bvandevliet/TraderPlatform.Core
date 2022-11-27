@@ -5,7 +5,7 @@ using TraderPlatform.Abstracts.Interfaces;
 namespace TraderPlatform.Abstracts.Models;
 
 /// <inheritdoc cref="IOrder"/>
-public class Order : OrderArgs, IOrder
+public class Order : IOrder, IOrderArgs
 {
   /// <summary>
   /// <inheritdoc cref="IOrder"/>
@@ -39,6 +39,18 @@ public class Order : OrderArgs, IOrder
 
   /// <inheritdoc/>
   public OrderStatus Status { get; set; }
+
+  /// <inheritdoc/>
+  public decimal? Price { get; set; }
+
+  /// <inheritdoc/>
+  public decimal? Amount { get; set; }
+
+  /// <inheritdoc/>
+  public decimal AmountQuote { get; set; }
+
+  /// <inheritdoc/>
+  public TimeInForce TimeInForce { get; set; }
 
   /// <inheritdoc/>
   public decimal AmountFilled { get; set; }
