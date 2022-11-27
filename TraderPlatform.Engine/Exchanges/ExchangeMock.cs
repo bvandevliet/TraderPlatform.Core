@@ -8,7 +8,7 @@ namespace TraderPlatform.Engine.Exchanges;
 /// <inheritdoc cref="IExchangeService"/>
 public class ExchangeMock : IExchangeService
 {
-  private readonly Balance curBalance;
+  protected Balance curBalance;
 
   /// <inheritdoc/>
   public IAsset QuoteCurrency { get; }
@@ -171,5 +171,31 @@ public class ExchangeMock : IExchangeService
   public Task<IEnumerable<IOrder>> SellAllPositions(IAsset? asset = null)
   {
     throw new NotImplementedException();
+  }
+}
+
+/// <inheritdoc cref="ExchangeMock"/>
+public class ExchangeMock<T> : ExchangeMock, IExchangeService where T : IExchangeService
+{
+  /// <summary>
+  /// The underlying exchange service this mock instance is based on.
+  /// </summary>
+  public T ExchangeService { get; }
+
+  /// <summary>
+  /// <inheritdoc cref="ExchangeMock(IAsset, decimal, decimal, decimal)"/>
+  /// </summary>
+  /// <param name="exchangeService">The exchange service to base this mock instance on.</param>
+  public ExchangeMock(T exchangeService)
+    : base(
+      exchangeService.QuoteCurrency,
+      exchangeService.MinimumOrderSize,
+      exchangeService.MakerFee,
+      exchangeService.TakerFee)
+  {
+    ExchangeService = exchangeService;
+
+    // Override current balance with the actual one from the underlying exchange service.
+    curBalance = exchangeService.GetBalance().Result;
   }
 }
