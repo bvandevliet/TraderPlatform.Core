@@ -29,30 +29,40 @@ public class ExchangeMock : IExchangeService
   /// <param name="minimumOrderSize"><inheritdoc cref="MinimumOrderSize"/></param>
   /// <param name="makerFee"><inheritdoc cref="MakerFee"/></param>
   /// <param name="takerFee"><inheritdoc cref="TakerFee"/></param>
+  /// <param name="curBalance"><inheritdoc cref="Balance"/></param>
   public ExchangeMock(
     IAsset quoteCurrency,
     decimal minimumOrderSize,
     decimal makerFee,
-    decimal takerFee)
+    decimal takerFee,
+    Balance? curBalance = null)
   {
     QuoteCurrency = quoteCurrency;
     MinimumOrderSize = minimumOrderSize;
     MakerFee = makerFee;
     TakerFee = takerFee;
 
-    decimal deposit = 1000;
+    if (null != curBalance)
+    {
+      this.curBalance = curBalance;
+    }
+    else
+    {
+      decimal deposit = 1000;
 
-    curBalance = new(QuoteCurrency);
+      this.curBalance = new(QuoteCurrency);
 
-    curBalance.AddAllocation(new(new Market(QuoteCurrency, new Asset("EUR")), 000001, .05m * deposit));
-    curBalance.AddAllocation(new(new Market(QuoteCurrency, new Asset("BTC")), 18_000, .40m * deposit / 15_000));
-    curBalance.AddAllocation(new(new Market(QuoteCurrency, new Asset("ETH")), 01_610, .30m * deposit / 01_400));
-    curBalance.AddAllocation(new(new Market(QuoteCurrency, new Asset("BNB")), 000306, .25m * deposit / 000340));
-    //                                                                                100%
+      this.curBalance.AddAllocation(new(new Market(QuoteCurrency, new Asset("EUR")), 000001, .05m * deposit));
+      this.curBalance.AddAllocation(new(new Market(QuoteCurrency, new Asset("BTC")), 18_000, .40m * deposit / 15_000));
+      this.curBalance.AddAllocation(new(new Market(QuoteCurrency, new Asset("ETH")), 01_610, .30m * deposit / 01_400));
+      this.curBalance.AddAllocation(new(new Market(QuoteCurrency, new Asset("BNB")), 000306, .25m * deposit / 000340));
+      //                                                                                     100%
+    }
   }
 
   /// <summary>
-  /// Returns a drifted <see cref="Balance"/> that had a initial value of €1000 allocated as follows:
+  /// If no initial <see cref="Balance"/> was given,
+  /// this returns a drifted <see cref="Balance"/> that had a initial value of €1000 and initially allocated as follows:
   /// <br/>
   /// EUR :  5 %
   /// <br/>
@@ -186,16 +196,16 @@ public class ExchangeMock<T> : ExchangeMock, IExchangeService where T : IExchang
   /// <inheritdoc cref="ExchangeMock(IAsset, decimal, decimal, decimal)"/>
   /// </summary>
   /// <param name="exchangeService">The exchange service to base this mock instance on.</param>
-  public ExchangeMock(T exchangeService)
+  /// <param name="curBalance"><inheritdoc cref="Balance"/></param>
+  public ExchangeMock(T exchangeService, Balance? curBalance = null)
     : base(
       exchangeService.QuoteCurrency,
       exchangeService.MinimumOrderSize,
       exchangeService.MakerFee,
-      exchangeService.TakerFee)
+      exchangeService.TakerFee,
+      // Override current balance with the actual one from the underlying exchange service if none given.
+      curBalance ?? exchangeService.GetBalance().Result)
   {
     ExchangeService = exchangeService;
-
-    // Override current balance with the actual one from the underlying exchange service.
-    curBalance = exchangeService.GetBalance().Result;
   }
 }
