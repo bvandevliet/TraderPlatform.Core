@@ -3,10 +3,10 @@ using TraderPlatform.Abstracts.Interfaces;
 using TraderPlatform.Abstracts.Models;
 using TraderPlatform.Abstracts.Services;
 
-namespace TraderPlatform.Engine.UnitTests.Services;
+namespace TraderPlatform.Engine.Exchanges;
 
 /// <inheritdoc cref="IExchangeService"/>
-internal class ExchangeService : IExchangeService
+public class ExchangeMock : IExchangeService
 {
   private readonly Balance curBalance;
 
@@ -29,7 +29,7 @@ internal class ExchangeService : IExchangeService
   /// <param name="minimumOrderSize"><inheritdoc cref="MinimumOrderSize"/></param>
   /// <param name="makerFee"><inheritdoc cref="MakerFee"/></param>
   /// <param name="takerFee"><inheritdoc cref="TakerFee"/></param>
-  public ExchangeService(
+  public ExchangeMock(
     IAsset quoteCurrency,
     decimal minimumOrderSize,
     decimal makerFee,

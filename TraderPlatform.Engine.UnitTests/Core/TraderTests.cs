@@ -1,7 +1,6 @@
-using TraderPlatform.Abstracts.Interfaces;
 using TraderPlatform.Abstracts.Models;
 using TraderPlatform.Engine.Models;
-using TraderPlatform.Engine.UnitTests.Services;
+using TraderPlatform.Engine.Exchanges;
 
 namespace TraderPlatform.Engine.Core.Tests;
 
@@ -13,7 +12,7 @@ public class TraderTests
   {
     Asset quoteCurrency = new("EUR");
 
-    ExchangeService exchangeService = new(quoteCurrency, 5, .0015m, .0025m);
+    ExchangeMock exchangeService = new(quoteCurrency, 5, .0015m, .0025m);
 
     Balance curBalance = await exchangeService.GetBalance();
 
