@@ -1,6 +1,5 @@
 using TraderPlatform.Abstracts.Models;
-using TraderPlatform.Engine.Models;
-using TraderPlatform.Engine.Exchanges;
+using TraderPlatform.Common.Exchanges;
 
 namespace TraderPlatform.Engine.Core.Tests;
 
@@ -25,7 +24,7 @@ public class TraderTests
       //                    100%
     };
 
-    var allocQuoteDiffs = Trader.GetAllocationQuoteDiffs(absAssetAlloc, curBalance).ToList();
+    var allocQuoteDiffs = Common.Functions.Rebalance.GetAllocationQuoteDiffs(absAssetAlloc, curBalance).ToList();
 
     Assert.AreEqual(5, allocQuoteDiffs.Count);
 
@@ -49,7 +48,7 @@ public class TraderTests
 
     curBalance = await exchangeService.GetBalance();
 
-    allocQuoteDiffs = Trader.GetAllocationQuoteDiffs(absAssetAlloc, curBalance).ToList();
+    allocQuoteDiffs = Common.Functions.Rebalance.GetAllocationQuoteDiffs(absAssetAlloc, curBalance).ToList();
 
     Assert.AreEqual(5, allocQuoteDiffs.Count);
 

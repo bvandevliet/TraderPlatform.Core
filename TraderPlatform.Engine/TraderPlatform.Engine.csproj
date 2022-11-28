@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TraderPlatform.Abstracts\TraderPlatform.Abstracts.csproj" />
+    <ProjectReference Include="..\TraderPlatform.Common\TraderPlatform.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

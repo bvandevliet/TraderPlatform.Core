@@ -1,6 +1,6 @@
 using TraderPlatform.Abstracts.Interfaces;
 
-namespace TraderPlatform.Engine.Models;
+namespace TraderPlatform.Abstracts.Models;
 
 public class AbsAssetAlloc
 {

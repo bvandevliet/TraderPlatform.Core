@@ -3,7 +3,7 @@ using TraderPlatform.Abstracts.Interfaces;
 using TraderPlatform.Abstracts.Models;
 using TraderPlatform.Abstracts.Services;
 
-namespace TraderPlatform.Engine.Exchanges;
+namespace TraderPlatform.Common.Exchanges;
 
 /// <inheritdoc cref="IExchangeService"/>
 public class ExchangeMock : IExchangeService
