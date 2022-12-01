@@ -1,3 +1,7 @@
+using TraderPlatform.Abstracts.Models;
+using TraderPlatform.Abstracts.Services;
+using TraderPlatform.Common.Exchanges;
+
 namespace TraderPlatform.Engine;
 
 public class Program
@@ -6,11 +10,25 @@ public class Program
   {
     WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-    builder.Services.AddControllers();
+    builder.Services.AddRouting(options =>
+    {
+      options.LowercaseUrls = true;
+    });
+
+    builder.Services.AddControllers(options =>
+    {
+      options.ReturnHttpNotAcceptable = true;
+    })
+      .AddXmlDataContractSerializerFormatters();
 
     // https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+
+    builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+    builder.Services.AddSingleton<IExchangeService>(new ExchangeMock(new Asset("EUR"), 5, .0015m, .0025m));
+    //builder.Services.AddSingleton<IExchangeService>(new ExchangeMock<BitvavoExchange>(new()));
 
     WebApplication app = builder.Build();
 
