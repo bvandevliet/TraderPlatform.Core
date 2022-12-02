@@ -13,7 +13,12 @@ public class Order : IOrder, IOrderArgs
   /// <param name="market"><inheritdoc cref="Market"/></param>
   /// <param name="side"><inheritdoc cref="Side"/></param>
   /// <param name="type"><inheritdoc cref="Type"/></param>
-  public Order(IMarket market, OrderSide side, OrderType type, IOrderArgs orderArgs)
+  /// <param name="orderArgs"><inheritdoc cref="IOrderArgs"/></param>
+  public Order(
+    IMarket market,
+    OrderSide side,
+    OrderType type,
+    IOrderArgs orderArgs)
   {
     Market = market;
     Side = side;
@@ -23,6 +28,51 @@ public class Order : IOrder, IOrderArgs
     Amount = orderArgs.Amount;
     AmountQuote = orderArgs.AmountQuote;
     TimeInForce = orderArgs.TimeInForce;
+  }
+
+  /// <summary>
+  /// <inheritdoc cref="Order(IMarket, OrderSide, OrderType, IOrderArgs)"/>
+  /// </summary>
+  /// <param name="quoteSymbol"><inheritdoc cref="IMarket.QuoteCurrency"/></param>
+  /// <param name="baseSymbol"><inheritdoc cref="IMarket.BaseCurrency"/></param>
+  /// <param name="side"><inheritdoc cref="Side"/></param>
+  /// <param name="type"><inheritdoc cref="Type"/></param>
+  /// <param name="orderArgs"><inheritdoc cref="IOrderArgs"/></param>
+  public Order(
+    string quoteSymbol,
+    string baseSymbol,
+    OrderSide side,
+    OrderType type,
+    IOrderArgs orderArgs)
+    : this(
+        new Market(new Asset(quoteSymbol), new Asset(baseSymbol)),
+        side, type, orderArgs)
+  {
+  }
+
+  /// <summary>
+  /// <inheritdoc cref="Order(IMarket, OrderSide, OrderType, IOrderArgs)"/>
+  /// </summary>
+  /// <param name="quoteSymbol"><inheritdoc cref="IMarket.QuoteCurrency"/></param>
+  /// <param name="baseSymbol"><inheritdoc cref="IMarket.BaseCurrency"/></param>
+  /// <param name="side"><inheritdoc cref="Side"/></param>
+  /// <param name="type"><inheritdoc cref="Type"/></param>
+  /// <param name="amountQuote"><inheritdoc cref="IOrderArgs.AmountQuote"/></param>
+  /// <param name="amount"><inheritdoc cref="IOrderArgs.Amount"/></param>
+  /// <param name="price"><inheritdoc cref="IOrderArgs.Price"/></param>
+  public Order(
+    string quoteSymbol,
+    string baseSymbol,
+    OrderSide side,
+    OrderType type,
+    decimal amountQuote,
+    decimal? amount = null,
+    decimal? price = null)
+    : this(
+        new Market(new Asset(quoteSymbol), new Asset(baseSymbol)),
+        side, type,
+        new OrderArgs(amountQuote) { Amount = amount, Price = price })
+  {
   }
 
   /// <inheritdoc/>

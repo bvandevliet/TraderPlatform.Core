@@ -1,13 +1,18 @@
 using System.ComponentModel.DataAnnotations;
+using TraderPlatform.Abstracts.Interfaces;
 
 namespace TraderPlatform.Abstracts.Models;
 
 /// <inheritdoc cref="Allocation"/>
 public class AllocationDto // : Allocation, ITickerPrice, IPosition
 {
-  /// <inheritdoc cref="Allocation.Market"/>
+  /// <inheritdoc cref="IMarket.QuoteCurrency"/>
   [Required]
-  public MarketDto Market { get; set; } = null!;
+  public string QuoteSymbol { get; set; } = null!;
+
+  /// <inheritdoc cref="IMarket.BaseCurrency"/>
+  [Required]
+  public string BaseSymbol { get; set; } = null!;
 
   /// <inheritdoc cref="Allocation.Price"/>
   [Required]

@@ -82,6 +82,22 @@ public class Allocation : ITickerPrice, IPosition
     this.amount = amount ?? 0;
   }
 
+  /// <summary>
+  /// <inheritdoc cref="Allocation(IMarket, decimal?, decimal?)"/>
+  /// </summary>
+  /// <param name="quoteSymbol"><inheritdoc cref="IMarket.QuoteCurrency"/></param>
+  /// <param name="baseSymbol"><inheritdoc cref="IMarket.BaseCurrency"/></param>
+  /// <param name="price"><inheritdoc cref="Price"/></param>
+  /// <param name="amount"><inheritdoc cref="Amount"/></param>
+  public Allocation(
+    string quoteSymbol,
+    string baseSymbol,
+    decimal? price = null,
+    decimal? amount = null)
+    : this(new Market(new Asset(quoteSymbol), new Asset(baseSymbol)), price, amount)
+  {
+  }
+
   private void UpdatePrice(decimal newValue)
   {
     decimal oldValue = Price;

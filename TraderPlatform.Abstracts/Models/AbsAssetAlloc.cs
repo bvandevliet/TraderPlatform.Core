@@ -13,4 +13,9 @@ public class AbsAssetAlloc
     Asset = asset;
     AbsAlloc = absAlloc;
   }
+
+  public AbsAssetAlloc(string baseSymbol, decimal absAlloc)
+    : this(new Asset(baseSymbol), absAlloc)
+  {
+  }
 }

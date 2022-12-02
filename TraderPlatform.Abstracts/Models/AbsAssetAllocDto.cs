@@ -7,7 +7,7 @@ public class AbsAssetAllocDto // : AbsAssetAlloc
 {
   /// <inheritdoc cref="AbsAssetAlloc.Asset"/>
   [Required]
-  public AssetDto Asset { get; set; } = null!;
+  public string BaseSymbol { get; set; } = null!;
 
   /// <inheritdoc cref="AbsAssetAlloc.AbsAlloc"/>
   [Required]

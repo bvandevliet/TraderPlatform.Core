@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TraderPlatform.Abstracts.Models;
@@ -10,23 +11,24 @@ namespace TraderPlatform.Engine.Controllers;
 [ApiController]
 public class RebalanceController : ControllerBase
 {
+  private readonly IMapper mapper;
   private readonly IExchangeService exchangeService;
 
   public RebalanceController(
+    IMapper mapper,
     IExchangeService exchangeService)
   {
+    this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     this.exchangeService = exchangeService ?? throw new ArgumentNullException(nameof(exchangeService));
   }
 
   [HttpPost]
   public async Task<ActionResult<IEnumerable<OrderDto>>> Rebalance(
-    RebalanceTriggerDto rebalanceTrigger)
+    IEnumerable<AbsAssetAllocDto> newAssetAllocs)
   {
-    // THESE CASTS DON'T WORK BUT IMPLEMENTING INTERFACES INTO DTO'S DOESN'T WORK EITHER !!
-    IEnumerable<Abstracts.Interfaces.IOrder> results = await exchangeService.Rebalance(
-      (IEnumerable<AbsAssetAlloc>)rebalanceTrigger.NewAssetAllocs,
-      (IEnumerable<KeyValuePair<Allocation, decimal>>?)rebalanceTrigger.AllocQuoteDiffs);
+    IEnumerable<Abstracts.Interfaces.IOrder> results =
+      await exchangeService.Rebalance(mapper.Map<List<AbsAssetAlloc>>(newAssetAllocs));
 
-    return Ok(results);
+    return Ok(mapper.Map<IEnumerable<OrderDto>>(results));
   }
 }
