@@ -5,10 +5,9 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY TraderPlatform.Daemon/ TraderPlatform.Daemon/
-COPY TraderPlatform.Common/ TraderPlatform.Common/
+COPY . .
 RUN dotnet restore "TraderPlatform.Daemon/TraderPlatform.Daemon.csproj"
-# COPY . .
+
 WORKDIR /src/TraderPlatform.Daemon
 RUN dotnet build "TraderPlatform.Daemon.csproj" -c Release -o /app/build
 

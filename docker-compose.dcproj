@@ -6,7 +6,9 @@
     <ProjectGuid>212570da-6a5c-4500-a55c-f889e06445e9</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>traderplatform.engine</DockerServiceName>
+    <DockerServiceName>traderplatform.api</DockerServiceName>
+    <DockerComposeBuildArguments>--no-cache</DockerComposeBuildArguments>
+    <DockerComposeUpArguments>--force-recreate</DockerComposeUpArguments>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

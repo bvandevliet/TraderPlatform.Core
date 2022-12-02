@@ -16,12 +16,19 @@ services:
     build:
       context: .
       dockerfile: TraderPlatform.Engine/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:${PORT_ENGINE_SSL};http://+:${PORT_ENGINE}
 
   traderplatform.api:
     image: ${DOCKER_REGISTRY-}traderplatform-api
     build:
       context: .
       dockerfile: TraderPlatform.API/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:${PORT_API_SSL};http://+:${PORT_API}
+    ports:
+      - "${PORT_API}:${PORT_API}"
+      - "${PORT_API_SSL}:${PORT_API_SSL}"
 
   traderplatform.daemon:
     image: ${DOCKER_REGISTRY-}traderplatform-daemon
