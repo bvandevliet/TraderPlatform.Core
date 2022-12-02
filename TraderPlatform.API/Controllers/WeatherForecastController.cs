@@ -16,7 +16,7 @@ public class WeatherForecastController : ControllerBase
 
   public WeatherForecastController(ILogger<WeatherForecastController> logger)
   {
-    logger = logger;
+    this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
   }
 
   [HttpGet(Name = "GetWeatherForecast")]
