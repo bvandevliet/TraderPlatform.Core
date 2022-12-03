@@ -1,7 +1,7 @@
 using AutoMapper;
 using TraderPlatform.Abstracts.Models;
 
-namespace TraderPlatform.Engine.Profiles;
+namespace TraderPlatform.Common.Profiles;
 
 public class AllocationProfile : Profile
 {

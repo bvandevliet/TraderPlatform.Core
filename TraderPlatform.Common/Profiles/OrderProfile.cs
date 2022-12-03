@@ -2,7 +2,7 @@ using AutoMapper;
 using TraderPlatform.Abstracts.Interfaces;
 using TraderPlatform.Abstracts.Models;
 
-namespace TraderPlatform.Engine.Profiles;
+namespace TraderPlatform.Common.Profiles;
 
 public class OrderProfile : Profile
 {

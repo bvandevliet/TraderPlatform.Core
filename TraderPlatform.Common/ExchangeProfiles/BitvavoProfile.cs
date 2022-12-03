@@ -1,6 +1,6 @@
 using AutoMapper;
 
-namespace TraderPlatform.Engine.ExchangeProfiles;
+namespace TraderPlatform.Common.ExchangeProfiles;
 
 public class BitvavoProfile : Profile
 {
