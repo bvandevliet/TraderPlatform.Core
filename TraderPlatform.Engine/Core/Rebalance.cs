@@ -222,14 +222,17 @@ public static partial class Trader
   /// <param name="allocQuoteDiffs"></param>
   public static async Task<IEnumerable<IOrder>> Rebalance(
     this IExchangeService @this,
-    IEnumerable<AbsAssetAlloc> newAssetAllocs)
+    IEnumerable<AbsAssetAlloc> newAssetAllocs,
+    IEnumerable<KeyValuePair<Allocation, decimal>>? allocQuoteDiffs = null)
   {
     // Clear the path ..
     await @this.CancelAllOpenOrders();
 
     // Sell pieces of oversized allocations first,
     // so we have sufficient quote currency available to buy with.
-    IOrder[] sellResults = await @this.SellOveragesAndVerify(newAssetAllocs);
+    IOrder[] sellResults = null != allocQuoteDiffs
+      ? await @this.SellOveragesAndVerify(allocQuoteDiffs)
+      : await @this.SellOveragesAndVerify(newAssetAllocs);
 
     // Then buy to increase undersized allocations.
     IOrder[] buyResults = await @this.BuyUnderages(newAssetAllocs);

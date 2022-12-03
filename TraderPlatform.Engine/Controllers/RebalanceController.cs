@@ -24,10 +24,14 @@ public class RebalanceController : ControllerBase
 
   [HttpPost]
   public async Task<ActionResult<IEnumerable<OrderDto>>> Rebalance(
-    IEnumerable<AbsAssetAllocDto> newAssetAllocs)
+    RebalanceTriggerDto rebalanceTrigger)
   {
-    IEnumerable<Abstracts.Interfaces.IOrder> results =
-      await exchangeService.Rebalance(mapper.Map<List<AbsAssetAlloc>>(newAssetAllocs));
+    var newAssetAllocs = mapper.Map<IEnumerable<AbsAssetAlloc>>(rebalanceTrigger.NewAssetAllocs);
+    var allocQuoteDiffs = mapper.Map<List<KeyValuePair<Allocation, decimal>>>(rebalanceTrigger.AllocQuoteDiffs);
+
+    allocQuoteDiffs = allocQuoteDiffs.Count == 0 ? null : allocQuoteDiffs;
+
+    IEnumerable<Abstracts.Interfaces.IOrder> results = await exchangeService.Rebalance(newAssetAllocs, allocQuoteDiffs);
 
     return Ok(mapper.Map<IEnumerable<OrderDto>>(results));
   }
