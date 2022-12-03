@@ -2,7 +2,7 @@ using TraderPlatform.Abstracts.Interfaces;
 using TraderPlatform.Abstracts.Models;
 using TraderPlatform.Abstracts.Services;
 
-namespace TraderPlatform.Engine.Core;
+namespace TraderPlatform.Engine.Extensions;
 
 public static partial class Trader
 {
