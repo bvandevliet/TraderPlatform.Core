@@ -22,6 +22,11 @@ public class RebalanceController : ControllerBase
     this.exchangeService = exchangeService ?? throw new ArgumentNullException(nameof(exchangeService));
   }
 
+  /// <summary>
+  /// <inheritdoc cref="Trader.Rebalance"/>
+  /// </summary>
+  /// <param name="rebalanceTrigger"></param>
+  /// <returns></returns>
   [HttpPost]
   public async Task<ActionResult<IEnumerable<OrderDto>>> Rebalance(
     RebalanceTriggerDto rebalanceTrigger)
