@@ -6,11 +6,24 @@ public class Program
   {
     WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-    builder.Services.AddControllers();
+    builder.Services.AddRouting(options =>
+    {
+      options.LowercaseUrls = true;
+    });
+
+    builder.Services.AddControllers(options =>
+    {
+      options.ReturnHttpNotAcceptable = true;
+    })
+      .AddXmlDataContractSerializerFormatters();
 
     // https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+
+    builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+    builder.Services.AddSingleton<HttpClient>();
 
     WebApplication app = builder.Build();
 
