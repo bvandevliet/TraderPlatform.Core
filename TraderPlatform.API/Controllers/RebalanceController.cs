@@ -28,9 +28,10 @@ public class RebalanceController : ControllerBase
   public async Task<ActionResult<IEnumerable<OrderDto>>> Rebalance(
     RebalanceTriggerDto rebalanceTrigger)
   {
-    HttpResponseMessage response = await httpClient.PostAsJsonAsync(
-      $"https://localhost:{Environment.GetEnvironmentVariable("PORT_ENGINE_SSL")}/api/rebalance",
-      rebalanceTrigger);
+    var port = Environment.GetEnvironmentVariable("PORT_ENGINE");
+
+    HttpResponseMessage response =
+      await httpClient.PostAsJsonAsync($"http://traderplatform.engine:{port}/api/rebalance", rebalanceTrigger);
 
     return Ok(await response.Content.ReadFromJsonAsync<IEnumerable<OrderDto>>());
   }
