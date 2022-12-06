@@ -2,6 +2,12 @@ version: '3.4'
 
 services:
 
+  traderplatform.database:
+    environment:
+      - MARIADB_USER=example-user
+      - MARIADB_PASSWORD=my_cool_secret
+      - MARIADB_ROOT_PASSWORD=my-secret-pw
+
   traderplatform.engine:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -11,11 +17,15 @@ services:
   traderplatform.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - MARIADB_USER=example-user
+      - MARIADB_PASSWORD=my_cool_secret
     ports:
       - "${PORT_API}:80"
 
   traderplatform.daemon:
     environment:
       - DOTNET_ENVIRONMENT=Development
+      - MARIADB_USER=example-user
+      - MARIADB_PASSWORD=my_cool_secret
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
