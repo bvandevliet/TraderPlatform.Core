@@ -7,29 +7,28 @@ networks:
 services:
 
   traderplatform.database:
-    container_name: database
+    container_name: traderplatform.database
     image: mariadb:latest
     networks:
       - TraderPlatform
 
   # traderplatform.redis:
+  #   container_name: traderplatform.redis
   #   image: redis:alpine
   #   networks:
   #     - TraderPlatform
 
-  traderplatform.nginx:
-    container_name: nginx
-    image: nginx:alpine
-    networks:
-      - TraderPlatform
+  # traderplatform.nginx:
+  #   container_name: traderplatform.nginx
+  #   image: nginx:alpine
+  #   networks:
+  #     - TraderPlatform
 
   traderplatform.engine:
     image: ${DOCKER_REGISTRY-}traderplatform-engine
     build:
       context: .
       dockerfile: TraderPlatform.Engine/Dockerfile
-    environment:
-      - ASPNETCORE_URLS=https://+:${PORT_ENGINE_SSL};http://+:${PORT_ENGINE}
     networks:
       - TraderPlatform
 
@@ -38,20 +37,22 @@ services:
     build:
       context: .
       dockerfile: TraderPlatform.API/Dockerfile
-    env_file:
-      - ./.env
+    depends_on:
+      - traderplatform.database
+      - traderplatform.engine
     environment:
-      - ASPNETCORE_URLS=https://+:${PORT_API_SSL};http://+:${PORT_API}
+      - ADDRESS_ENGINE=http://traderplatform.engine
     networks:
       - TraderPlatform
-    ports:
-      - "${PORT_API}:${PORT_API}"
-      - "${PORT_API_SSL}:${PORT_API_SSL}"
 
   traderplatform.daemon:
     image: ${DOCKER_REGISTRY-}traderplatform-daemon
     build:
       context: .
       dockerfile: TraderPlatform.Daemon/Dockerfile
+    depends_on:
+      - traderplatform.api
+    environment:
+      - ADDRESS_API=http://traderplatform.api
     networks:
       - TraderPlatform

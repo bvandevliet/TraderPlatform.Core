@@ -15,11 +15,7 @@ public class Program
       options.LowercaseUrls = true;
     });
 
-    builder.Services.AddControllers(options =>
-    {
-      options.ReturnHttpNotAcceptable = true;
-    })
-      .AddXmlDataContractSerializerFormatters();
+    builder.Services.AddControllers();
 
     // https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
@@ -38,18 +34,7 @@ public class Program
       app.UseSwaggerUI();
     }
 
-    //app.UseHttpsRedirection();
-
-    app.UseRouting(); // app.MapControllers(); manual step 1/2
-
-    app.UseAuthentication();
-
-    app.UseAuthorization();
-
-    app.UseEndpoints(endpoints => // app.MapControllers(); manual step 2/2
-    {
-      endpoints.MapControllers();
-    });
+    app.MapControllers();
 
     app.Run();
   }

@@ -3,11 +3,12 @@
     "TraderPlatform.Daemon": {
       "commandName": "Project",
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
+        "DOTNET_ENVIRONMENT": "Development",
+        "ADDRESS_API": "http://localhost:4000"
       },
       "dotnetRunMessages": true
     },
-    "Docker (1)": {
+    "Docker": {
       "commandName": "Docker"
     }
   }

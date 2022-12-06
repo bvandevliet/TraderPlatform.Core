@@ -33,8 +33,6 @@ public class Program
       app.UseSwaggerUI();
     }
 
-    app.UseHttpsRedirection();
-
     app.UseRouting(); // app.MapControllers(); manual step 1/2
 
     app.UseAuthentication();

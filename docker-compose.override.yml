@@ -5,19 +5,14 @@ services:
   traderplatform.engine:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-    # ports:
-    #   - "${PORT_ENGINE}:${PORT_ENGINE}"
-    #   - "${PORT_ENGINE_SSL}:${PORT_ENGINE_SSL}"
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    ports:
+      - "${PORT_ENGINE}:80"
 
   traderplatform.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    ports:
+      - "${PORT_API}:80"
 
   traderplatform.daemon:
     environment:
