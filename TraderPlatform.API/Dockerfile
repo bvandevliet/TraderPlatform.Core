@@ -10,10 +10,12 @@ COPY . .
 RUN dotnet restore "TraderPlatform.API/TraderPlatform.API.csproj"
 
 WORKDIR /src/TraderPlatform.API
-RUN dotnet build "TraderPlatform.API.csproj" -c Release -o /app/build
+ARG MODE=Release
+RUN dotnet build "TraderPlatform.API.csproj" -c $MODE -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "TraderPlatform.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+ARG MODE=Release
+RUN dotnet publish "TraderPlatform.API.csproj" -c $MODE -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

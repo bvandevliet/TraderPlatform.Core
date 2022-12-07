@@ -9,10 +9,12 @@ COPY . .
 RUN dotnet restore "TraderPlatform.Daemon/TraderPlatform.Daemon.csproj"
 
 WORKDIR /src/TraderPlatform.Daemon
-RUN dotnet build "TraderPlatform.Daemon.csproj" -c Release -o /app/build
+ARG MODE=Release
+RUN dotnet build "TraderPlatform.Daemon.csproj" -c $MODE -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "TraderPlatform.Daemon.csproj" -c Release -o /app/publish /p:UseAppHost=false
+ARG MODE=Release
+RUN dotnet publish "TraderPlatform.Daemon.csproj" -c $MODE -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

@@ -7,6 +7,7 @@
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>traderplatform.api</DockerServiceName>
+    <DockerDevelopmentMode>Regular</DockerDevelopmentMode>
     <DockerComposeBuildArguments>--no-cache</DockerComposeBuildArguments>
     <DockerComposeUpArguments>--force-recreate</DockerComposeUpArguments>
   </PropertyGroup>

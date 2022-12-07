@@ -9,12 +9,18 @@ services:
       - MARIADB_ROOT_PASSWORD=my-secret-pw
 
   traderplatform.engine:
+    build:
+      args:
+        - MODE=Debug
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "${PORT_ENGINE}:80"
 
   traderplatform.api:
+    build:
+      args:
+        - MODE=Debug
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - MARIADB_USER=example-user
@@ -23,6 +29,9 @@ services:
       - "${PORT_API}:80"
 
   traderplatform.daemon:
+    build:
+      args:
+        - MODE=Debug
     environment:
       - DOTNET_ENVIRONMENT=Development
       - MARIADB_USER=example-user
