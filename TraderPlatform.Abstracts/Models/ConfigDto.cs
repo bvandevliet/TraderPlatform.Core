@@ -1,18 +1,18 @@
 using System.ComponentModel.DataAnnotations;
 using TraderPlatform.Abstracts.Interfaces;
 
-namespace TraderPlatform.Abstracts.BaseClasses;
+namespace TraderPlatform.Abstracts.Models;
 
-/// <inheritdoc cref="IConfiguration"/>
-public abstract class ConfigurationBase : IConfiguration
+/// <inheritdoc cref="IConfig"/>
+public abstract class ConfigDto : IConfig
 {
   /// <inheritdoc/>
   [Required]
-  public IAsset? QuoteCurrency { get; set; } = null;
+  public IAsset QuoteCurrency { get; set; } = null!;
 
   /// <inheritdoc/>
   [Range(0, 100)]
-  public decimal QuoteAllocation { get; set; } = 0m;
+  public decimal QuoteAllocation { get; set; } = 0;
 
   /// <inheritdoc/>
   public Dictionary<IAsset, decimal> AltWeightingFactors { get; set; } = new();
@@ -26,7 +26,7 @@ public abstract class ConfigurationBase : IConfiguration
 
   /// <inheritdoc/>
   [Range(1, 50)]
-  public decimal Smoothing { get; set; } = 4m;
+  public decimal Smoothing { get; set; } = 4;
 
   /// <inheritdoc/>
   [Range(1, 20)]
@@ -34,11 +34,11 @@ public abstract class ConfigurationBase : IConfiguration
 
   /// <inheritdoc/>
   [Range(1, double.PositiveInfinity)]
-  public decimal IntervalHours { get; set; } = 6m;
+  public decimal IntervalHours { get; set; } = 6;
 
   /// <inheritdoc/>
   [Range(0, double.PositiveInfinity)]
-  public decimal MinimumDiffQuote { get; set; } = 5m;
+  public decimal MinimumDiffQuote { get; set; } = 5;
 
   /// <inheritdoc/>
   [Range(0, 100)]

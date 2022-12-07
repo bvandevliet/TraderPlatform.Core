@@ -1,8 +1,8 @@
 namespace TraderPlatform.Abstracts.Interfaces;
 
-public interface IConfiguration
+public interface IConfig
 {
-  IAsset? QuoteCurrency { get; set; }
+  IAsset QuoteCurrency { get; set; }
 
   decimal QuoteAllocation { get; set; }
 
