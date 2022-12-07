@@ -7,6 +7,8 @@ services:
       - MARIADB_USER=example-user
       - MARIADB_PASSWORD=my_cool_secret
       - MARIADB_ROOT_PASSWORD=my-secret-pw
+    ports:
+      - "3306:3306"
 
   traderplatform.engine:
     build:

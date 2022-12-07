@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using TraderPlatform.API.DbContexts;
+
 namespace TraderPlatform.Engine;
 
 public class Program
@@ -22,6 +26,13 @@ public class Program
     builder.Services.AddSwaggerGen();
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+    builder.Services.AddDbContext<TraderContext>(options =>
+    {
+      options.UseMySql(
+        builder.Configuration.GetConnectionString("mariadb"),
+        new MySqlServerVersion(ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mariadb"))));
+    });
 
     builder.Services.AddHttpClient();
 
