@@ -20,9 +20,37 @@ services:
 
   # traderplatform.nginx:
   #   container_name: traderplatform.nginx
-  #   image: nginx:alpine
+  #   # image: nginx:latest
+  #   build:
+  #     context: .
+  #     dockerfile: nginx.Dockerfile
+  #   depends_on:
+  #     # - traderplatform.certbot
+  #     - traderplatform.api
+  #   environment:
+  #     - DOMAIN
+  #   ports:
+  #     - 80:80
+  #     - 443:443
   #   networks:
   #     - TraderPlatform
+  #   volumes:
+  #     - ./.volumes/certbot/www:/var/www/certbot/:ro
+  #     - ./.volumes/certbot/etc/letsencrypt:/etc/letsencrypt:ro
+  #     - ./.volumes/certbot/var/lib/letsencrypt:/var/lib/letsencrypt:ro
+  #   command: "/bin/sh -c 'while :; do sleep 4h & wait $${!}; nginx -s reload; done;'"
+
+  # traderplatform.certbot:
+  #   container_name: traderplatform.certbot
+  #   image: certbot/certbot:latest
+  #   depends_on:
+  #     - traderplatform.nginx
+  #   volumes:
+  #     - ./.volumes/certbot/www:/var/www/certbot/:rw
+  #     - ./.volumes/certbot/etc/letsencrypt:/etc/letsencrypt:rw
+  #     - ./.volumes/certbot/var/lib/letsencrypt:/var/lib/letsencrypt:rw
+  #   command: certonly --webroot -w /var/www/certbot --email ${EMAIL} --no-eff-email -d ${DOMAIN} --agree-tos
+  #   entrypoint: "/bin/sh -c 'while :; do sleep 12h & wait $${!}; certbot renew; done;'"
 
   traderplatform.engine:
     image: ${DOCKER_REGISTRY-}traderplatform-engine
