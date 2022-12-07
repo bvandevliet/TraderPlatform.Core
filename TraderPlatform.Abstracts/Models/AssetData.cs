@@ -5,6 +5,9 @@ namespace TraderPlatform.Abstracts.Models;
 /// <inheritdoc cref="IAssetData"/>
 public class AssetData : Asset, IAssetData
 {
+  /// <inheritdoc/>
+  public int Decimals { get; set; }
+
   /// <summary>
   /// <inheritdoc cref="IAssetData"/>
   /// </summary>
@@ -13,7 +16,4 @@ public class AssetData : Asset, IAssetData
   public AssetData(string symbol, string? name = null) : base(symbol, name)
   {
   }
-
-  /// <inheritdoc/>
-  public int Decimals { get; set; }
 }
