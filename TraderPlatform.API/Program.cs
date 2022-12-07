@@ -23,7 +23,7 @@ public class Program
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-    builder.Services.AddSingleton<HttpClient>();
+    builder.Services.AddHttpClient();
 
     WebApplication app = builder.Build();
 
