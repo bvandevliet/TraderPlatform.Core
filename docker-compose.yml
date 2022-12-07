@@ -9,8 +9,12 @@ services:
   traderplatform.database:
     container_name: traderplatform.database
     image: mariadb:latest
+    environment:
+      - MARIADB_DATABASE=trader
     networks:
       - TraderPlatform
+    volumes:
+      - ./.volumes/mysql/data:/var/lib/mysql
 
   # traderplatform.redis:
   #   container_name: traderplatform.redis
