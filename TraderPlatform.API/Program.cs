@@ -30,7 +30,7 @@ public class Program
     {
       options.UseMySql(
         builder.Configuration.GetConnectionString("mariadb"),
-        new MySqlServerVersion(ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mariadb"))));
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mariadb")));
     });
 
     builder.Services.AddHttpClient();
