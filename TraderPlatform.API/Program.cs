@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using TraderPlatform.API.DbContexts;
 
-namespace TraderPlatform.Engine;
+namespace TraderPlatform.API;
 
 public class Program
 {
