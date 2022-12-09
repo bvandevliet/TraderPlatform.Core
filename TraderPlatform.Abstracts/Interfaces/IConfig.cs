@@ -8,7 +8,7 @@ public interface IConfig
 
   Dictionary<IAsset, decimal> AltWeightingFactors { get; set; }
 
-  List<string> TagsToIgnore { get; set; }
+  ICollection<string> TagsToIgnore { get; set; }
 
   int TopRankingCount { get; set; }
 

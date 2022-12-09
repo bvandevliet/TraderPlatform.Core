@@ -12,59 +12,46 @@ public class ConfigEntity // : IConfig
   public int Id { get; set; }
 
   /// <inheritdoc cref="IConfig.QuoteCurrency"/>
-  [Required]
-  [ForeignKey("QuoteCurrencyId")]
-  public AssetEntity QuoteCurrency { get; set; }
-  public int QuoteCurrencyId { get; set; }
+  public string QuoteSymbol { get; set; }
 
   /// <inheritdoc cref="IConfig.QuoteAllocation"/>
-  [Required]
   public decimal QuoteAllocation { get; set; }
 
   /// <inheritdoc cref="IConfig.AltWeightingFactors"/>
-  [Required]
-  public Dictionary<AssetEntity, decimal> AltWeightingFactors { get; set; }
+  public virtual Dictionary<string, decimal> AltWeightingFactors { get; set; }
 
   /// <inheritdoc cref="IConfig.TagsToIgnore"/>
-  [Required]
-  public List<string> TagsToIgnore { get; set; }
+  public ICollection<string> TagsToIgnore { get; set; }
 
   /// <inheritdoc cref="IConfig.TopRankingCount"/>
-  [Required]
   public int TopRankingCount { get; set; }
 
   /// <inheritdoc cref="IConfig.Smoothing"/>
-  [Required]
   public decimal Smoothing { get; set; }
 
   /// <inheritdoc cref="IConfig.NthRoot"/>
-  [Required]
   public decimal NthRoot { get; set; }
 
   /// <inheritdoc cref="IConfig.IntervalHours"/>
-  [Required]
   public decimal IntervalHours { get; set; }
 
   /// <inheritdoc cref="IConfig.MinimumDiffQuote"/>
-  [Required]
   public decimal MinimumDiffQuote { get; set; }
 
   /// <inheritdoc cref="IConfig.MinimumDiffAllocation"/>
-  [Required]
   public decimal MinimumDiffAllocation { get; set; }
 
   /// <inheritdoc cref="IConfig.AutomationEnabled"/>
-  [Required]
   public bool AutomationEnabled { get; set; }
 
   /// <inheritdoc cref="IConfig.LastRebalance"/>
   public DateTime? LastRebalance { get; set; }
 
   public ConfigEntity(
-    AssetEntity quoteCurrency,
+    string quoteSymbol,
     decimal quoteAllocation,
-    Dictionary<AssetEntity, decimal> altWeightingFactors,
-    List<string> tagsToIgnore,
+    //Dictionary<AssetEntity, decimal> altWeightingFactors,
+    //List<string> tagsToIgnore,
     int topRankingCount,
     decimal smoothing,
     decimal nthRoot,
@@ -74,10 +61,10 @@ public class ConfigEntity // : IConfig
     bool automationEnabled,
     DateTime? lastRebalance = null)
   {
-    QuoteCurrency = quoteCurrency;
+    QuoteSymbol = quoteSymbol;
     QuoteAllocation = quoteAllocation;
-    AltWeightingFactors = altWeightingFactors;
-    TagsToIgnore = tagsToIgnore;
+    //AltWeightingFactors = altWeightingFactors;
+    //TagsToIgnore = tagsToIgnore;
     TopRankingCount = topRankingCount;
     Smoothing = smoothing;
     NthRoot = nthRoot;
