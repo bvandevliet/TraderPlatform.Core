@@ -12,6 +12,7 @@ public class ConfigEntity // : IConfig
   public int Id { get; set; }
 
   /// <inheritdoc cref="IConfig.QuoteCurrency"/>
+  [MaxLength(20)]
   public string QuoteSymbol { get; set; }
 
   /// <inheritdoc cref="IConfig.QuoteAllocation"/>
@@ -50,8 +51,8 @@ public class ConfigEntity // : IConfig
   public ConfigEntity(
     string quoteSymbol,
     decimal quoteAllocation,
-    //Dictionary<AssetEntity, decimal> altWeightingFactors,
-    //List<string> tagsToIgnore,
+    Dictionary<string, decimal> altWeightingFactors,
+    ICollection<string> tagsToIgnore,
     int topRankingCount,
     decimal smoothing,
     decimal nthRoot,
@@ -63,8 +64,8 @@ public class ConfigEntity // : IConfig
   {
     QuoteSymbol = quoteSymbol;
     QuoteAllocation = quoteAllocation;
-    //AltWeightingFactors = altWeightingFactors;
-    //TagsToIgnore = tagsToIgnore;
+    AltWeightingFactors = altWeightingFactors;
+    TagsToIgnore = tagsToIgnore;
     TopRankingCount = topRankingCount;
     Smoothing = smoothing;
     NthRoot = nthRoot;
