@@ -4,11 +4,10 @@ services:
 
   traderplatform.database:
     environment:
-      - MARIADB_USER=example-user
-      - MARIADB_PASSWORD=my_cool_secret
-      - MARIADB_ROOT_PASSWORD=my-secret-pw
+      - MONGO_INITDB_ROOT_USERNAME=dev
+      - MONGO_INITDB_ROOT_PASSWORD=dev
     ports:
-      - "3306:3306"
+      - "27017:27017"
 
   traderplatform.engine:
     build:
@@ -25,8 +24,8 @@ services:
         - MODE=Debug
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - MARIADB_USER=example-user
-      - MARIADB_PASSWORD=my_cool_secret
+      - MONGO_INITDB_ROOT_USERNAME=dev
+      - MONGO_INITDB_ROOT_PASSWORD=dev
     ports:
       - "${PORT_API}:80"
 
@@ -36,7 +35,7 @@ services:
         - MODE=Debug
     environment:
       - DOTNET_ENVIRONMENT=Development
-      - MARIADB_USER=example-user
-      - MARIADB_PASSWORD=my_cool_secret
+      - MONGO_INITDB_ROOT_USERNAME=dev
+      - MONGO_INITDB_ROOT_PASSWORD=dev
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro

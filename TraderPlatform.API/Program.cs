@@ -1,5 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using TraderPlatform.API.DbContexts;
+using MongoDB.Driver;
 
 namespace TraderPlatform.API;
 
@@ -26,12 +25,7 @@ public class Program
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-    builder.Services.AddDbContext<TraderContext>(options =>
-    {
-      options.UseMySql(
-        builder.Configuration.GetConnectionString("mariadb"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mariadb")));
-    });
+    builder.Services.AddScoped<IMongoClient>(x => new MongoClient(builder.Configuration.GetConnectionString("mongodb")));
 
     builder.Services.AddHttpClient();
 
