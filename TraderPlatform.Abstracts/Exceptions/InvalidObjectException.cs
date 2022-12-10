@@ -8,6 +8,7 @@ public class InvalidObjectException : Exception
   public InvalidObjectException() : base()
   {
   }
+
   public InvalidObjectException(string? message) : base(message)
   {
   }

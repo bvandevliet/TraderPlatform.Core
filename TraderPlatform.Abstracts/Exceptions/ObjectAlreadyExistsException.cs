@@ -8,6 +8,7 @@ public class ObjectAlreadyExistsException : Exception
   public ObjectAlreadyExistsException() : base()
   {
   }
+
   public ObjectAlreadyExistsException(string? message) : base(message)
   {
   }

@@ -193,7 +193,7 @@ public class ExchangeMock<T> : ExchangeMock, IExchangeService where T : IExchang
   public T ExchangeService { get; }
 
   /// <summary>
-  /// <inheritdoc cref="ExchangeMock(IAsset, decimal, decimal, decimal)"/>
+  /// <inheritdoc cref="ExchangeMock(IAsset, decimal, decimal, decimal, Balance?)"/>
   /// </summary>
   /// <param name="exchangeService">The exchange service to base this mock instance on.</param>
   /// <param name="curBalance"><inheritdoc cref="Balance"/></param>
