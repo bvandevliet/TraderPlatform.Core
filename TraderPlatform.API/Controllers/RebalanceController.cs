@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TraderPlatform.Abstracts.Models;
+using TraderPlatform.Common.HttpClients;
 
 namespace TraderPlatform.API.Controllers;
 
@@ -8,12 +9,12 @@ namespace TraderPlatform.API.Controllers;
 [ApiController]
 public class RebalanceController : ControllerBase
 {
-  private readonly HttpClient httpClient;
+  private readonly EngineClient engineClient;
 
   public RebalanceController(
-    HttpClient httpClient)
+    EngineClient engineClient)
   {
-    this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    this.engineClient = engineClient ?? throw new ArgumentNullException(nameof(engineClient));
   }
 
   /// <summary>
@@ -28,11 +29,6 @@ public class RebalanceController : ControllerBase
   public async Task<ActionResult<IEnumerable<OrderDto>>> Rebalance(
     RebalanceTriggerDto rebalanceTrigger)
   {
-    string address = Environment.GetEnvironmentVariable("ADDRESS_ENGINE")!;
-
-    HttpResponseMessage response =
-      await httpClient.PostAsJsonAsync($"{address}/api/rebalance", rebalanceTrigger);
-
-    return Ok(await response.Content.ReadFromJsonAsync<IEnumerable<OrderDto>>());
+    return Ok(await engineClient.Rebalance(rebalanceTrigger));
   }
 }

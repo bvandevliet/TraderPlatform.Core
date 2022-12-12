@@ -1,4 +1,5 @@
 using MongoDB.Driver;
+using TraderPlatform.Common.HttpClients;
 
 namespace TraderPlatform.API;
 
@@ -28,6 +29,8 @@ public class Program
     builder.Services.AddScoped<IMongoClient>(x => new MongoClient(builder.Configuration.GetConnectionString("mongodb")));
 
     builder.Services.AddHttpClient();
+
+    builder.Services.AddSingleton<EngineClient>();
 
     WebApplication app = builder.Build();
 
