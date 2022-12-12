@@ -6,42 +6,24 @@ using TraderPlatform.Abstracts.Services;
 namespace TraderPlatform.Common.Exchanges;
 
 /// <inheritdoc cref="IExchangeService"/>
-public class ExchangeMock : IExchangeService
+public class MockExchange : IExchangeService
 {
-  protected Balance curBalance;
+  protected Balance curBalance = null!;
 
   /// <inheritdoc/>
-  public IAsset QuoteCurrency { get; }
+  public IAsset QuoteCurrency { get; protected set; } = new Asset("EUR");
 
   /// <inheritdoc/>
-  public decimal MinimumOrderSize { get; }
+  public decimal MinimumOrderSize { get; protected set; }
 
   /// <inheritdoc/>
-  public decimal MakerFee { get; }
+  public decimal MakerFee { get; protected set; }
 
   /// <inheritdoc/>
-  public decimal TakerFee { get; }
+  public decimal TakerFee { get; protected set; }
 
-  /// <summary>
-  /// <inheritdoc cref="IExchangeService"/>
-  /// </summary>
-  /// <param name="quoteCurrency"><inheritdoc cref="QuoteCurrency"/></param>
-  /// <param name="minimumOrderSize"><inheritdoc cref="MinimumOrderSize"/></param>
-  /// <param name="makerFee"><inheritdoc cref="MakerFee"/></param>
-  /// <param name="takerFee"><inheritdoc cref="TakerFee"/></param>
-  /// <param name="curBalance"><inheritdoc cref="Balance"/></param>
-  public ExchangeMock(
-    IAsset quoteCurrency,
-    decimal minimumOrderSize,
-    decimal makerFee,
-    decimal takerFee,
-    Balance? curBalance = null)
+  protected void Init(Balance? curBalance)
   {
-    QuoteCurrency = quoteCurrency;
-    MinimumOrderSize = minimumOrderSize;
-    MakerFee = makerFee;
-    TakerFee = takerFee;
-
     if (null != curBalance)
     {
       this.curBalance = curBalance;
@@ -58,6 +40,54 @@ public class ExchangeMock : IExchangeService
       this.curBalance.AddAllocation(new(new Market(QuoteCurrency, new Asset("BNB")), 000306, .25m * deposit / 000340));
       //                                                                                     100%
     }
+  }
+
+  /// <summary>
+  /// <inheritdoc cref="IExchangeService"/>
+  /// </summary>
+  /// <param name="curBalance"><inheritdoc cref="Balance"/></param>
+  public MockExchange(Balance? curBalance = null)
+  {
+    Init(curBalance);
+  }
+
+  /// <summary>
+  /// <inheritdoc cref="IExchangeService"/>
+  /// </summary>
+  /// <param name="quoteCurrency"><inheritdoc cref="QuoteCurrency"/></param>
+  /// <param name="minimumOrderSize"><inheritdoc cref="MinimumOrderSize"/></param>
+  /// <param name="makerFee"><inheritdoc cref="MakerFee"/></param>
+  /// <param name="takerFee"><inheritdoc cref="TakerFee"/></param>
+  /// <param name="curBalance"><inheritdoc cref="Balance"/></param>
+  public MockExchange(
+    IAsset quoteCurrency,
+    decimal minimumOrderSize,
+    decimal makerFee,
+    decimal takerFee,
+    Balance? curBalance = null)
+  {
+    QuoteCurrency = quoteCurrency;
+    MinimumOrderSize = minimumOrderSize;
+    MakerFee = makerFee;
+    TakerFee = takerFee;
+
+    Init(curBalance);
+  }
+
+  /// <summary>
+  /// <inheritdoc cref="IExchangeService"/>
+  /// </summary>
+  /// <param name="exchangeService">Instance of the exchange service to base this mock instance on.</param>
+  /// <param name="curBalance"><inheritdoc cref="Balance"/></param>
+  public MockExchange(IExchangeService exchangeService, Balance? curBalance = null)
+    : this(
+      exchangeService.QuoteCurrency,
+      exchangeService.MinimumOrderSize,
+      exchangeService.MakerFee,
+      exchangeService.TakerFee,
+      // Override current balance with the actual one from the underlying exchange service if none given.
+      curBalance ?? exchangeService.GetBalance().Result)
+  {
   }
 
   /// <summary>
@@ -184,28 +214,34 @@ public class ExchangeMock : IExchangeService
   }
 }
 
-/// <inheritdoc cref="ExchangeMock"/>
-public class ExchangeMock<T> : ExchangeMock, IExchangeService where T : IExchangeService
+/// <inheritdoc cref="MockExchange"/>
+public class MockExchange<T> : MockExchange, IExchangeService where T : class, IExchangeService
 {
   /// <summary>
-  /// The underlying exchange service this mock instance is based on.
+  /// The underlying exchange service instance this mock instance is based on.
   /// </summary>
   public T ExchangeService { get; }
 
   /// <summary>
-  /// <inheritdoc cref="ExchangeMock(IAsset, decimal, decimal, decimal, Balance?)"/>
+  /// <inheritdoc cref="IExchangeService"/>
   /// </summary>
-  /// <param name="exchangeService">The exchange service to base this mock instance on.</param>
-  /// <param name="curBalance"><inheritdoc cref="Balance"/></param>
-  public ExchangeMock(T exchangeService, Balance? curBalance = null)
-    : base(
-      exchangeService.QuoteCurrency,
-      exchangeService.MinimumOrderSize,
-      exchangeService.MakerFee,
-      exchangeService.TakerFee,
-      // Override current balance with the actual one from the underlying exchange service if none given.
-      curBalance ?? exchangeService.GetBalance().Result)
+  public MockExchange(T exchangeService) : base()
   {
     ExchangeService = exchangeService;
+
+    QuoteCurrency = ExchangeService.QuoteCurrency;
+    MinimumOrderSize = ExchangeService.MinimumOrderSize;
+    MakerFee = ExchangeService.MakerFee;
+    TakerFee = ExchangeService.TakerFee;
+
+    // Override current balance with the actual one from the underlying exchange service.
+    try
+    {
+      curBalance = ExchangeService.GetBalance().Result;
+    }
+    catch (NotImplementedException)
+    {
+      //Init(null);
+    }
   }
 }

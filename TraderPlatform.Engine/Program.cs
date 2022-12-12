@@ -23,8 +23,17 @@ public class Program
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-    builder.Services.AddSingleton<IExchangeService>(new ExchangeMock(new Asset("EUR"), 5, .0015m, .0025m));
-    //builder.Services.AddSingleton<IExchangeService>(new ExchangeMock<BitvavoExchange>(new()));
+    if (builder.Environment.IsDevelopment())
+    {
+      builder.Services.AddHttpClient<BitvavoExchange>();
+      builder.Services.AddSingleton<IExchangeService, MockExchange<BitvavoExchange>>();
+    }
+    else
+    {
+      //builder.Services.AddHttpClient<IExchangeService, ExchangeA>();
+      //builder.Services.AddHttpClient<IExchangeService, ExchangeB>();
+      //builder.Services.AddHttpClient<IExchangeService, ExchangeC>();
+    }
 
     WebApplication app = builder.Build();
 

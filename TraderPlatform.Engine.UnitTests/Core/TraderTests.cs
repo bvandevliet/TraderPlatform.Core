@@ -8,7 +8,7 @@ public class TraderTests
 {
   private readonly Asset quoteCurrency = new("EUR");
 
-  private readonly ExchangeMock exchangeService;
+  private readonly MockExchange exchangeService;
 
   private readonly List<AbsAssetAlloc> absAssetAlloc = new()
   {
