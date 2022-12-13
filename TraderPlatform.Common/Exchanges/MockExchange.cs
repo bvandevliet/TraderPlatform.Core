@@ -11,7 +11,7 @@ public class MockExchange : IExchangeService
   protected Balance curBalance = null!;
 
   /// <inheritdoc/>
-  public IAsset QuoteCurrency { get; protected set; } = new Asset("EUR");
+  public Asset QuoteCurrency { get; protected set; } = new("EUR");
 
   /// <inheritdoc/>
   public decimal MinimumOrderSize { get; protected set; }
@@ -60,7 +60,7 @@ public class MockExchange : IExchangeService
   /// <param name="takerFee"><inheritdoc cref="TakerFee"/></param>
   /// <param name="curBalance"><inheritdoc cref="Balance"/></param>
   public MockExchange(
-    IAsset quoteCurrency,
+    Asset quoteCurrency,
     decimal minimumOrderSize,
     decimal makerFee,
     decimal takerFee,
@@ -121,19 +121,19 @@ public class MockExchange : IExchangeService
   }
 
   /// <inheritdoc/>
-  public Task<object> GetCandles(IMarket market, CandleInterval interval, int limit)
+  public Task<object> GetCandles(Market market, CandleInterval interval, int limit)
   {
     throw new NotImplementedException();
   }
 
   /// <inheritdoc/>
-  public Task<bool> IsTradable(IMarket market)
+  public Task<bool> IsTradable(Market market)
   {
     return Task.FromResult(true);
   }
 
   /// <inheritdoc/>
-  public Task<ITickerPrice> GetPrice(IMarket market)
+  public Task<ITickerPrice> GetPrice(Market market)
   {
     throw new NotImplementedException();
   }
@@ -178,37 +178,37 @@ public class MockExchange : IExchangeService
   }
 
   /// <inheritdoc/>
-  public Task<IOrder> NewOrder(IMarket market, OrderSide side, OrderType type, IOrderArgs orderArgs)
+  public Task<IOrder> NewOrder(Market market, OrderSide side, OrderType type, IOrderArgs orderArgs)
   {
     throw new NotImplementedException();
   }
 
   /// <inheritdoc/>
-  public Task<IOrder?> GetOrder(string orderId, IMarket? market = null)
+  public Task<IOrder?> GetOrder(string orderId, Market? market = null)
   {
     throw new NotImplementedException();
   }
 
   /// <inheritdoc/>
-  public Task<IOrder?> CancelOrder(string orderId, IMarket? market = null)
+  public Task<IOrder?> CancelOrder(string orderId, Market? market = null)
   {
     throw new NotImplementedException();
   }
 
   /// <inheritdoc/>
-  public Task<IEnumerable<IOrder>> GetOpenOrders(IMarket? market = null)
+  public Task<IEnumerable<IOrder>> GetOpenOrders(Market? market = null)
   {
     throw new NotImplementedException();
   }
 
   /// <inheritdoc/>
-  public Task<IEnumerable<IOrder>> CancelAllOpenOrders(IMarket? market = null)
+  public Task<IEnumerable<IOrder>> CancelAllOpenOrders(Market? market = null)
   {
     return Task.FromResult((IEnumerable<IOrder>)new List<Order>());
   }
 
   /// <inheritdoc/>
-  public Task<IEnumerable<IOrder>> SellAllPositions(IAsset? asset = null)
+  public Task<IEnumerable<IOrder>> SellAllPositions(Asset? asset = null)
   {
     throw new NotImplementedException();
   }

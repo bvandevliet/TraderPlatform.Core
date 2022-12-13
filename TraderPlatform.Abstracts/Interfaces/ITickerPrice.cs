@@ -1,3 +1,5 @@
+using TraderPlatform.Abstracts.Models;
+
 namespace TraderPlatform.Abstracts.Interfaces;
 
 /// <summary>
@@ -5,8 +7,8 @@ namespace TraderPlatform.Abstracts.Interfaces;
 /// </summary>
 public interface ITickerPrice
 {
-  /// <inheritdoc cref="IMarket"/>
-  IMarket Market { get; }
+  /// <inheritdoc cref="Market"/>
+  Market Market { get; }
 
   /// <summary>
   /// Price in quote currency per unit of base currency.

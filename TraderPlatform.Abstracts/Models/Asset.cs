@@ -1,20 +1,22 @@
-using TraderPlatform.Abstracts.Interfaces;
-
 namespace TraderPlatform.Abstracts.Models;
 
-/// <inheritdoc cref="IAsset"/>
-#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
-public class Asset : IAsset
-#pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+/// <summary>
+/// Represents a currency.
+/// </summary>
+public class Asset : IEquatable<Asset>
 {
-  /// <inheritdoc/>
+  /// <summary>
+  /// Short version of the asset name used in market names.
+  /// </summary>
   public string Symbol { get; set; }
 
-  /// <inheritdoc/>
+  /// <summary>
+  /// The full name of the asset.
+  /// </summary>
   public string Name { get; set; }
 
   /// <summary>
-  /// <inheritdoc cref="IAsset"/>
+  /// <inheritdoc cref="Asset"/>
   /// </summary>
   /// <param name="symbol"><inheritdoc cref="Symbol"/></param>
   /// <param name="name"><inheritdoc cref="Name"/></param>
@@ -24,7 +26,12 @@ public class Asset : IAsset
     Name = name ?? string.Empty;
   }
 
-  public bool Equals(IAsset? obj) =>
+  public override bool Equals(object? obj)
+  {
+    return Equals(obj as Asset);
+  }
+
+  public bool Equals(Asset? obj) =>
     obj is not null && Symbol == obj.Symbol;
 
   public override int GetHashCode() => Symbol.GetHashCode();

@@ -3,14 +3,14 @@ using TraderPlatform.Abstracts.Interfaces;
 
 namespace TraderPlatform.Abstracts.Models;
 
-/// <inheritdoc cref="IMarket"/>
-public class MarketDto // : IMarket
+/// <inheritdoc cref="Market"/>
+public class MarketDto // : Market
 {
-  /// <inheritdoc cref="IMarket.QuoteCurrency"/>
+  /// <inheritdoc cref="Market.QuoteCurrency"/>
   [Required]
   public AssetDto QuoteCurrency { get; set; } = null!;
 
-  /// <inheritdoc cref="IMarket.BaseCurrency"/>
+  /// <inheritdoc cref="Market.BaseCurrency"/>
   [Required]
   public AssetDto BaseCurrency { get; set; } = null!;
 }

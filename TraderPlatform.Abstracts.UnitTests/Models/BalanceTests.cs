@@ -14,7 +14,7 @@ public class BalanceTests
     private bool amountQuoteAvailableReset = false;
 
     /// <inheritdoc/>
-    public BalanceWrapper(IAsset quoteCurrency) : base(quoteCurrency)
+    public BalanceWrapper(Asset quoteCurrency) : base(quoteCurrency)
     {
       OnAmountQuoteTotalReset += (sender, e) => amountQuoteTotalReset = true;
       OnAmountQuoteAvailableReset += (sender, e) => amountQuoteAvailableReset = true;

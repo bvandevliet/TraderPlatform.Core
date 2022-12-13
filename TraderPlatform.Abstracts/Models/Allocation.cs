@@ -6,7 +6,7 @@ namespace TraderPlatform.Abstracts.Models;
 /// <summary>
 /// Represents an asset allocation.
 /// </summary>
-public class Allocation : ITickerPrice, IPosition
+public class Allocation : ITickerPrice
 {
   /// <summary>
   /// Triggered when <see cref="Price"/> has changed.
@@ -29,7 +29,7 @@ public class Allocation : ITickerPrice, IPosition
   /// <summary>
   /// The market this instance represents an allocation in.
   /// </summary>
-  public IMarket Market { get; }
+  public Market Market { get; }
 
   private decimal price;
   /// <inheritdoc cref="ITickerPrice.Price"/>
@@ -43,7 +43,9 @@ public class Allocation : ITickerPrice, IPosition
   }
 
   private decimal amount;
-  /// <inheritdoc cref="IPosition.Amount"/>
+  /// <summary>
+  /// Amount in base currency.
+  /// </summary>
   public decimal Amount
   {
     get => amount;
@@ -67,13 +69,13 @@ public class Allocation : ITickerPrice, IPosition
   }
 
   /// <summary>
-  /// Represents an allocation in a given <see cref="IAsset"/> against a given quote currency as defined by <paramref name="market"/>.
+  /// Represents an allocation in a given <see cref="Asset"/> against a given quote currency as defined by <paramref name="market"/>.
   /// </summary>
   /// <param name="market"><inheritdoc cref="Market"/></param>
   /// <param name="price"><inheritdoc cref="Price"/></param>
   /// <param name="amount"><inheritdoc cref="Amount"/></param>
   public Allocation(
-    IMarket market,
+    Market market,
     decimal? price = null,
     decimal? amount = null)
   {
@@ -83,10 +85,10 @@ public class Allocation : ITickerPrice, IPosition
   }
 
   /// <summary>
-  /// <inheritdoc cref="Allocation(IMarket, decimal?, decimal?)"/>
+  /// <inheritdoc cref="Allocation(Market, decimal?, decimal?)"/>
   /// </summary>
-  /// <param name="quoteSymbol"><inheritdoc cref="IMarket.QuoteCurrency"/></param>
-  /// <param name="baseSymbol"><inheritdoc cref="IMarket.BaseCurrency"/></param>
+  /// <param name="quoteSymbol"><inheritdoc cref="Market.QuoteCurrency"/></param>
+  /// <param name="baseSymbol"><inheritdoc cref="Market.BaseCurrency"/></param>
   /// <param name="price"><inheritdoc cref="Price"/></param>
   /// <param name="amount"><inheritdoc cref="Amount"/></param>
   public Allocation(

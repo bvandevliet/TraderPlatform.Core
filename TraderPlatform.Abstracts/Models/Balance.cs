@@ -22,7 +22,7 @@ public class Balance
   /// <summary>
   /// The quote currency on which this balance instance is based.
   /// </summary>
-  public IAsset QuoteCurrency { get; }
+  public Asset QuoteCurrency { get; }
 
   private readonly List<Allocation> allocations = new();
   /// <summary>
@@ -52,7 +52,7 @@ public class Balance
   /// Collection of <see cref="Allocation"/> instances and total quote amount values.
   /// </summary>
   /// <param name="quoteCurrency"><inheritdoc cref="QuoteCurrency"/></param>
-  public Balance(IAsset quoteCurrency)
+  public Balance(Asset quoteCurrency)
   {
     QuoteCurrency = quoteCurrency;
 
@@ -62,9 +62,9 @@ public class Balance
   /// <summary>
   /// Get an <see cref="Allocation"/> for the given <paramref name="asset"/> if exists.
   /// </summary>
-  /// <param name="asset">The <see cref="IAsset"/> to find allocation of.</param>
+  /// <param name="asset">The <see cref="Asset"/> to find allocation of.</param>
   /// <returns></returns>
-  public Allocation? GetAllocation(IAsset asset) =>
+  public Allocation? GetAllocation(Asset asset) =>
     allocations.Find(alloc => alloc.Market.BaseCurrency.Equals(asset));
 
   /// <summary>
@@ -111,9 +111,9 @@ public class Balance
   /// Remove an <see cref="Allocation"/> from the <see cref="Allocations"/> collection.
   /// Note that <see cref="AmountQuoteTotal"/> will be reset and related events will be triggered.
   /// </summary>
-  /// <param name="asset">The <see cref="IAsset"/> to remove allocation of.</param>
+  /// <param name="asset">The <see cref="Asset"/> to remove allocation of.</param>
   /// <returns>The <see cref="Allocation"/> that was removed.</returns>
-  public Allocation? RemoveAllocation(IAsset asset)
+  public Allocation? RemoveAllocation(Asset asset)
   {
     Allocation? allocation = GetAllocation(asset);
 

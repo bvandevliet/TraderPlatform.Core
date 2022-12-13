@@ -1,4 +1,5 @@
 using TraderPlatform.Abstracts.Enums;
+using TraderPlatform.Abstracts.Models;
 
 namespace TraderPlatform.Abstracts.Interfaces;
 
@@ -15,7 +16,7 @@ public interface IOrder : IOrderArgs
   /// <summary>
   /// The market to trade.
   /// </summary>
-  IMarket Market { get; }
+  Market Market { get; }
 
   /// <summary>
   /// When placing a buy order the base currency will be bought for the quote currency.

@@ -6,7 +6,7 @@ namespace TraderPlatform.Abstracts.Services;
 
 public interface IExchangeService
 {
-  IAsset QuoteCurrency { get; }
+  Asset QuoteCurrency { get; }
 
   decimal MinimumOrderSize { get; }
 
@@ -23,23 +23,23 @@ public interface IExchangeService
   Task<object> WithdrawHistory();
 
   // TODO: ASIGN TYPE !!
-  Task<object> GetCandles(IMarket market, CandleInterval interval, int limit);
+  Task<object> GetCandles(Market market, CandleInterval interval, int limit);
 
-  Task<bool> IsTradable(IMarket market);
+  Task<bool> IsTradable(Market market);
 
-  Task<ITickerPrice> GetPrice(IMarket market);
+  Task<ITickerPrice> GetPrice(Market market);
 
   Task<IOrder> NewOrder(IOrder order);
 
-  Task<IOrder> NewOrder(IMarket market, OrderSide side, OrderType type, IOrderArgs orderArgs);
+  Task<IOrder> NewOrder(Market market, OrderSide side, OrderType type, IOrderArgs orderArgs);
 
-  Task<IOrder?> GetOrder(string orderId, IMarket? market = null);
+  Task<IOrder?> GetOrder(string orderId, Market? market = null);
 
-  Task<IOrder?> CancelOrder(string orderId, IMarket? market = null);
+  Task<IOrder?> CancelOrder(string orderId, Market? market = null);
 
-  Task<IEnumerable<IOrder>> GetOpenOrders(IMarket? market = null);
+  Task<IEnumerable<IOrder>> GetOpenOrders(Market? market = null);
 
-  Task<IEnumerable<IOrder>> CancelAllOpenOrders(IMarket? market = null);
+  Task<IEnumerable<IOrder>> CancelAllOpenOrders(Market? market = null);
 
-  Task<IEnumerable<IOrder>> SellAllPositions(IAsset? asset = null);
+  Task<IEnumerable<IOrder>> SellAllPositions(Asset? asset = null);
 }

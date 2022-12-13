@@ -15,7 +15,7 @@ public class Order : IOrder, IOrderArgs
   /// <param name="type"><inheritdoc cref="Type"/></param>
   /// <param name="orderArgs"><inheritdoc cref="IOrderArgs"/></param>
   public Order(
-    IMarket market,
+    Market market,
     OrderSide side,
     OrderType type,
     IOrderArgs orderArgs)
@@ -31,10 +31,10 @@ public class Order : IOrder, IOrderArgs
   }
 
   /// <summary>
-  /// <inheritdoc cref="Order(IMarket, OrderSide, OrderType, IOrderArgs)"/>
+  /// <inheritdoc cref="Order(Market, OrderSide, OrderType, IOrderArgs)"/>
   /// </summary>
-  /// <param name="quoteSymbol"><inheritdoc cref="IMarket.QuoteCurrency"/></param>
-  /// <param name="baseSymbol"><inheritdoc cref="IMarket.BaseCurrency"/></param>
+  /// <param name="quoteSymbol"><inheritdoc cref="Market.QuoteCurrency"/></param>
+  /// <param name="baseSymbol"><inheritdoc cref="Market.BaseCurrency"/></param>
   /// <param name="side"><inheritdoc cref="Side"/></param>
   /// <param name="type"><inheritdoc cref="Type"/></param>
   /// <param name="orderArgs"><inheritdoc cref="IOrderArgs"/></param>
@@ -51,10 +51,10 @@ public class Order : IOrder, IOrderArgs
   }
 
   /// <summary>
-  /// <inheritdoc cref="Order(IMarket, OrderSide, OrderType, IOrderArgs)"/>
+  /// <inheritdoc cref="Order(Market, OrderSide, OrderType, IOrderArgs)"/>
   /// </summary>
-  /// <param name="quoteSymbol"><inheritdoc cref="IMarket.QuoteCurrency"/></param>
-  /// <param name="baseSymbol"><inheritdoc cref="IMarket.BaseCurrency"/></param>
+  /// <param name="quoteSymbol"><inheritdoc cref="Market.QuoteCurrency"/></param>
+  /// <param name="baseSymbol"><inheritdoc cref="Market.BaseCurrency"/></param>
   /// <param name="side"><inheritdoc cref="Side"/></param>
   /// <param name="type"><inheritdoc cref="Type"/></param>
   /// <param name="amountQuote"><inheritdoc cref="IOrderArgs.AmountQuote"/></param>
@@ -79,7 +79,7 @@ public class Order : IOrder, IOrderArgs
   public string? Id { get; set; }
 
   /// <inheritdoc/>
-  public IMarket Market { get; }
+  public Market Market { get; }
 
   /// <inheritdoc/>
   public OrderSide Side { get; }

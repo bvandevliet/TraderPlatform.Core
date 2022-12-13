@@ -10,11 +10,11 @@ public class OrderDto // : IOrder, IOrderArgs
   /// <inheritdoc cref="Order.Id"/>
   public string? Id { get; set; }
 
-  /// <inheritdoc cref="IMarket.QuoteCurrency"/>
+  /// <inheritdoc cref="Market.QuoteCurrency"/>
   [Required]
   public string QuoteSymbol { get; set; } = null!;
 
-  /// <inheritdoc cref="IMarket.BaseCurrency"/>
+  /// <inheritdoc cref="Market.BaseCurrency"/>
   [Required]
   public string BaseSymbol { get; set; } = null!;
 
