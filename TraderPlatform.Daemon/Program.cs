@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using TraderPlatform.Abstracts.Models;
 
 namespace TraderPlatform.Daemon;
 
@@ -9,7 +11,9 @@ public class Program
     IHost host = Host.CreateDefaultBuilder(args)
       .ConfigureServices((builder, services) =>
       {
-        services.AddSingleton<IMongoClient>(new MongoClient(builder.Configuration.GetConnectionString("mongodb")));
+        services.Configure<MongoSettings>(builder.Configuration.GetSection("MongoDatabase"));
+
+        services.AddSingleton<IMongoClient>(x => new MongoClient(x.GetService<IOptions<MongoSettings>>()!.Value.ConnectionString));
 
         services.AddHostedService<Worker>();
       })

@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using TraderPlatform.Abstracts.Models;
 using TraderPlatform.Common.HttpClients;
 
 namespace TraderPlatform.API;
@@ -26,7 +28,9 @@ public class Program
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-    builder.Services.AddScoped<IMongoClient>(x => new MongoClient(builder.Configuration.GetConnectionString("mongodb")));
+    builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("MongoDatabase"));
+
+    builder.Services.AddScoped<IMongoClient>(x => new MongoClient(x.GetService<IOptions<MongoSettings>>()!.Value.ConnectionString));
 
     builder.Services.AddHttpClient();
 
