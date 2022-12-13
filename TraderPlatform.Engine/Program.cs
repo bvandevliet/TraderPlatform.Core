@@ -1,4 +1,3 @@
-using TraderPlatform.Abstracts.Models;
 using TraderPlatform.Abstracts.Services;
 using TraderPlatform.Common.Exchanges;
 
