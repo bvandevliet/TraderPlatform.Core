@@ -28,7 +28,7 @@ public class Program
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-    builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("MongoDatabase"));
+    builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("MongoDB"));
 
     builder.Services.AddScoped<IMongoClient>(x => new MongoClient(x.GetService<IOptions<MongoSettings>>()!.Value.ConnectionString));
 

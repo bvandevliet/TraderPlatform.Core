@@ -11,7 +11,7 @@ public class Program
     IHost host = Host.CreateDefaultBuilder(args)
       .ConfigureServices((builder, services) =>
       {
-        services.Configure<MongoSettings>(builder.Configuration.GetSection("MongoDatabase"));
+        services.Configure<MongoSettings>(builder.Configuration.GetSection("MongoDB"));
 
         services.AddSingleton<IMongoClient>(x => new MongoClient(x.GetService<IOptions<MongoSettings>>()!.Value.ConnectionString));
 

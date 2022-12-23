@@ -2,14 +2,19 @@ version: '3.4'
 
 services:
 
-  traderplatform.database:
-    container_name: traderplatform.database
-    image: mongo:latest
+  traderplatform.mongodb:
+    container_name: TraderPlatform.MongoDB
+    image: traderplatform-mongodb
+    build:
+      context: .
+      dockerfile: mongo/mongo.Dockerfile
     volumes:
       - ./.volumes/mongo/db:/data/db
+      - ./.volumes/mongo/configdb:/data/configdb
 
   # traderplatform.nginx:
-  #   image: traderplatform.nginx
+  #   container_name: TraderPlatform.nginx
+  #   image: traderplatform-nginx
   #   build:
   #     context: .
   #     dockerfile: nginx/nginx.Dockerfile
@@ -28,7 +33,7 @@ services:
   #   command: "/bin/sh -c 'while :; do sleep 4h & wait $${!}; nginx -s reload; done;'"
 
   # traderplatform.certbot:
-  #   container_name: traderplatform.certbot
+  #   container_name: TraderPlatform.Certbot
   #   image: certbot/certbot:latest
   #   depends_on:
   #     - traderplatform.nginx
@@ -40,28 +45,32 @@ services:
   #   entrypoint: "/bin/sh -c 'while :; do sleep 12h & wait $${!}; certbot renew; done;'"
 
   traderplatform.engine:
+    container_name: TraderPlatform.Engine
     image: ${DOCKER_REGISTRY-}traderplatform-engine
     build:
       context: .
       dockerfile: TraderPlatform.Engine/Dockerfile
 
   traderplatform.api:
+    container_name: TraderPlatform.API
     image: ${DOCKER_REGISTRY-}traderplatform-api
     build:
       context: .
       dockerfile: TraderPlatform.API/Dockerfile
     depends_on:
-      - traderplatform.database
+      - traderplatform.mongodb
       - traderplatform.engine
     environment:
       - ADDRESS_ENGINE=http://traderplatform.engine
 
   traderplatform.daemon:
+    container_name: TraderPlatform.Daemon
     image: ${DOCKER_REGISTRY-}traderplatform-daemon
     build:
       context: .
       dockerfile: TraderPlatform.Daemon/Dockerfile
     depends_on:
+      - traderplatform.mongodb
       - traderplatform.api
     environment:
       - ADDRESS_API=http://traderplatform.api

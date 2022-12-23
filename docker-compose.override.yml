@@ -2,13 +2,14 @@ version: '3.4'
 
 services:
 
-  traderplatform.database:
+  traderplatform.mongodb:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=dev
       - MONGO_INITDB_ROOT_PASSWORD=dev
 
-  traderplatform.support:
-    image: traderplatform-support
+  traderplatform.supportproxy:
+    container_name: TraderPlatform.SupportProxy
+    image: traderplatform-supportproxy
     build:
       context: .
       dockerfile: nginx/nginx-support.Dockerfile
