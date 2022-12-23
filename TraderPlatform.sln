@@ -16,9 +16,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		LICENSE = LICENSE
-		nginx.conf = nginx.conf
-		nginx.Dockerfile = nginx.Dockerfile
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nginx", "nginx", "{BE8EEC4F-9861-4054-959D-58D7EB8AD01A}"
+	ProjectSection(SolutionItems) = preProject
+		nginx\nginx-support.conf = nginx\nginx-support.conf
+		nginx\nginx-support.Dockerfile = nginx\nginx-support.Dockerfile
+		nginx\nginx.conf = nginx\nginx.conf
+		nginx\nginx.Dockerfile = nginx\nginx.Dockerfile
+		nginx\trader-support.sh = nginx\trader-support.sh
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraderPlatform.API", "TraderPlatform.API\TraderPlatform.API.csproj", "{AFA7A4C6-1FA3-4BDB-8E19-28741EE47D52}"
