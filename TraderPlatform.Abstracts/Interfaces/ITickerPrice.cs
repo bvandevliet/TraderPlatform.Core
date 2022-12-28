@@ -7,7 +7,7 @@ namespace TraderPlatform.Abstracts.Interfaces;
 /// </summary>
 public interface ITickerPrice
 {
-  /// <inheritdoc cref="Market"/>
+  /// <inheritdoc cref="Models.Market"/>
   Market Market { get; }
 
   /// <summary>
