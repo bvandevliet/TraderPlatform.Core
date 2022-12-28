@@ -1,4 +1,4 @@
-namespace TraderPlatform.Abstracts.Models;
+namespace TraderPlatform.Abstracts.AppSettings;
 
 public class MongoSettings
 {

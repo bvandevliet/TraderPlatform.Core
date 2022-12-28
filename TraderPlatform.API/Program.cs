@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using TraderPlatform.Abstracts.Models;
+using TraderPlatform.Abstracts.AppSettings;
 using TraderPlatform.Common.HttpClients;
 
 namespace TraderPlatform.API;
